@@ -4,7 +4,7 @@
   "description": "Automatización para Foundry VTT del juego de rol Dragon Universe (versión antigua), creado por el equipo de https://dbu-rpg.com/. Implementación con permiso de los autores; mecánicas d10, Tiers of Power, Ki y transformaciones. Proyecto sin ánimo de lucro, gratuito, hecho por fans para fans.",
   "version": "1.0.2",
   "compatibility": {
-    "minimum": "12",
+    "minimum": "14",
     "verified": "14",
     "maximum": "14"
   },
