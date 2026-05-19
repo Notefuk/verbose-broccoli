@@ -1,0 +1,171 @@
+<div class="downtime-container">
+
+  {{!-- ==================== PERIOD HEADER ==================== --}}
+  <div class="dt-period-header">
+    <div class="dt-period-title">
+      <i class="fas fa-hourglass-half"></i> Downtime Period
+    </div>
+    {{#if dtPeriodActive}}
+      <div class="dt-budget">
+        <span class="dt-budget-label">DT:</span>
+        <span class="dt-budget-spent">{{dtSpentDT}}</span>
+        <span class="dt-budget-sep">/</span>
+        <span class="dt-budget-total">{{dtTotalDT}}</span>
+        <span class="dt-budget-remaining">({{dtRemainingDT}} remaining)</span>
+      </div>
+      <div class="dt-period-actions">
+        <button type="button" class="dt-btn dt-btn-end" data-action="dt-end-period" title="End current period and save to history">
+          <i class="fas fa-check"></i> End Period
+        </button>
+        <button type="button" class="dt-btn dt-btn-cancel" data-action="dt-cancel-period" title="Cancel current period without saving">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    {{else}}
+      <div class="dt-start-controls">
+        <label class="dt-start-label">DT to grant:</label>
+        <select class="dt-start-amount" data-action="dt-amount-select">
+          <option value="1">1 DT</option>
+          <option value="2" selected>2 DT</option>
+          <option value="3">3 DT</option>
+        </select>
+        <button type="button" class="dt-btn dt-btn-start" data-action="dt-start-period">
+          <i class="fas fa-play"></i> Start Period
+        </button>
+      </div>
+    {{/if}}
+  </div>
+
+  {{!-- ==================== ACTIVITIES ==================== --}}
+  <div class="dt-activities-section">
+
+    {{!-- TRAINING ACTIVITIES --}}
+    <div class="dt-category">
+      <div class="dt-category-header"><i class="fas fa-dumbbell"></i> Training Activities</div>
+
+      {{#each dtTrainingActivities}}
+      <div class="dt-activity-card {{#if disabled}}dt-disabled{{/if}} {{#if usedThisPeriod}}dt-used{{/if}}">
+        <div class="dt-activity-header">
+          <span class="dt-activity-name">{{name}}</span>
+          <span class="dt-activity-cost">{{cost}} DT</span>
+          {{#if (eq limit "N/A")}}
+            <span class="dt-activity-limit dt-unlimited">∞</span>
+          {{else}}
+            <span class="dt-activity-limit">{{lifetimeUsed}}/{{limit}}</span>
+          {{/if}}
+        </div>
+        <div class="dt-activity-effect">{{effect}}</div>
+        <div class="dt-activity-actions">
+          {{#if usedThisPeriod}}
+            <button type="button" class="dt-btn dt-btn-undo" data-action="dt-undo-activity" data-activity-id="{{id}}" title="Undo this activity">
+              <i class="fas fa-undo"></i> Undo
+            </button>
+          {{else}}
+            <button type="button" class="dt-btn dt-btn-use" data-action="dt-use-activity" data-activity-id="{{id}}"
+              {{#if disabled}}disabled{{/if}}
+              title="{{#if disabled}}{{disabledReason}}{{else}}Use this activity{{/if}}">
+              <i class="fas fa-check-circle"></i> Use
+            </button>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+
+    {{!-- RECREATIONAL ACTIVITIES --}}
+    <div class="dt-category">
+      <div class="dt-category-header"><i class="fas fa-mug-hot"></i> Recreational Activities</div>
+
+      {{#each dtRecreationalActivities}}
+      <div class="dt-activity-card {{#if disabled}}dt-disabled{{/if}} {{#if usedThisPeriod}}dt-used{{/if}}">
+        <div class="dt-activity-header">
+          <span class="dt-activity-name">{{name}}</span>
+          <span class="dt-activity-cost">{{cost}} DT</span>
+          {{#if (eq limit "N/A")}}
+            <span class="dt-activity-limit dt-unlimited">∞</span>
+          {{else}}
+            <span class="dt-activity-limit">{{lifetimeUsed}}/{{limit}}</span>
+          {{/if}}
+        </div>
+        <div class="dt-activity-effect">{{effect}}</div>
+        <div class="dt-activity-actions">
+          {{#if usedThisPeriod}}
+            <button type="button" class="dt-btn dt-btn-undo" data-action="dt-undo-activity" data-activity-id="{{id}}" title="Undo this activity">
+              <i class="fas fa-undo"></i> Undo
+            </button>
+          {{else}}
+            <button type="button" class="dt-btn dt-btn-use" data-action="dt-use-activity" data-activity-id="{{id}}"
+              {{#if disabled}}disabled{{/if}}
+              title="{{#if disabled}}{{disabledReason}}{{else}}Use this activity{{/if}}">
+              <i class="fas fa-check-circle"></i> Use
+            </button>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- ==================== MODIFIERS ==================== --}}
+  {{#if dtPeriodActive}}
+  <div class="dt-modifiers-section">
+    <div class="dt-category-header"><i class="fas fa-sliders-h"></i> Downtime Modifiers (max 2/period)</div>
+    <div class="dt-modifiers-grid">
+      {{#each dtModifiers}}
+      <div class="dt-modifier-card {{#if active}}dt-modifier-active{{/if}} {{#if disabled}}dt-disabled{{/if}}">
+        <label class="dt-modifier-toggle">
+          <input type="checkbox" data-action="dt-toggle-modifier" data-modifier-id="{{id}}"
+            {{#if active}}checked{{/if}}
+            {{#if disabled}}disabled{{/if}} />
+          <span class="dt-modifier-name">{{name}}</span>
+          <span class="dt-modifier-type">({{type}})</span>
+        </label>
+        <div class="dt-modifier-effect">{{effect}}</div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== PERIOD NOTES ==================== --}}
+  {{#if dtPeriodActive}}
+  <div class="dt-notes-section">
+    <label class="dt-notes-label"><i class="fas fa-sticky-note"></i> Period Notes</label>
+    <textarea name="system.downtime.currentPeriod.notes" class="dt-notes-input" placeholder="Notes for this downtime period...">{{system.downtime.currentPeriod.notes}}</textarea>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== HISTORY ==================== --}}
+  <div class="dt-history-section">
+    <div class="dt-category-header"><i class="fas fa-history"></i> Period History</div>
+    {{#if dtHasHistory}}
+      {{#each dtHistory}}
+      <div class="dt-history-entry">
+        <div class="dt-history-header">
+          <span class="dt-history-period">Period {{periodNum}}</span>
+          <span class="dt-history-dt">{{totalDT}} DT</span>
+          <button type="button" class="dt-btn-icon" data-action="dt-delete-history" data-history-index="{{@index}}" title="Delete this entry">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+        <div class="dt-history-details">
+          {{#if activities.length}}
+            <span class="dt-history-label">Activities:</span>
+            {{#each activities}}<span class="dt-history-tag dt-tag-activity">{{this}}</span>{{/each}}
+          {{/if}}
+          {{#if modifiers.length}}
+            <span class="dt-history-label">Modifiers:</span>
+            {{#each modifiers}}<span class="dt-history-tag dt-tag-modifier">{{this}}</span>{{/each}}
+          {{/if}}
+          {{#if notes}}
+            <div class="dt-history-notes">{{notes}}</div>
+          {{/if}}
+        </div>
+      </div>
+      {{/each}}
+    {{else}}
+      <div class="dt-history-empty">No downtime periods recorded yet.</div>
+    {{/if}}
+  </div>
+
+</div>

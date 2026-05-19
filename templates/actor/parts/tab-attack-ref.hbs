@@ -1,0 +1,270 @@
+<div class="attack-ref-container">
+    {{!-- Top row: Attack Reference Cards + Advantage/Disadvantage Lookup --}}
+    <div class="ar-top-layout">
+        <div class="ar-left-panel">
+            <div class="section-header">
+                Attack References
+                <button type="button" class="add-btn" data-action="add-attack-ref" title="Add Attack Reference"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="ar-list">
+                {{#if attackRefs.length}}
+                {{#each attackRefs}}
+                <div class="attack-ref-card" data-ref-index="{{_idx}}">
+                    <div class="ar-title-bar">
+                        <input type="text" class="ar-input ar-name-input" name="system.attackRefs.{{_idx}}.name" value="{{attackName}}" placeholder="Attack Reference" />
+                        <button type="button" class="attack-ref-remove" data-action="remove-attack-ref" data-index="{{_idx}}" title="Remove"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <table class="ar-table">
+                        <colgroup>
+                            <col class="ar-col-label"><col class="ar-col-val">
+                            <col class="ar-col-label"><col class="ar-col-val">
+                            <col class="ar-col-label"><col class="ar-col-val">
+                            <col class="ar-col-label"><col class="ar-col-val">
+                        </colgroup>
+                        <tbody>
+                            {{!-- Row 1: Attack Name/Profile line --}}
+                            <tr>
+                                <td class="ar-lbl">Attack Name</td>
+                                <td class="ar-val" colspan="3">{{attackName}}</td>
+                                <td class="ar-lbl">Ki Cost</td>
+                                <td class="ar-val">{{profileKP}}</td>
+                                <td class="ar-lbl">Extra Profile</td>
+                                <td class="ar-val">{{#if extraProfile}}{{extraProfile}}{{else}}-{{/if}}</td>
+                            </tr>
+                            {{!-- Row 2: Foundation, Profile, Strike CT, Target Range --}}
+                            <tr>
+                                <td class="ar-lbl">Foundation</td>
+                                <td class="ar-val">
+                                    <select class="ar-select ar-foundation" name="system.attackRefs.{{_idx}}.foundation">
+                                        <option value="Physical" {{#if (eq foundation "Physical")}}selected{{/if}}>Physical</option>
+                                        <option value="Energy" {{#if (eq foundation "Energy")}}selected{{/if}}>Energy</option>
+                                        <option value="Magic" {{#if (eq foundation "Magic")}}selected{{/if}}>Magic</option>
+                                    </select>
+                                </td>
+                                <td class="ar-lbl">Profile</td>
+                                <td class="ar-val">
+                                    <select class="ar-select ar-profile" name="system.attackRefs.{{_idx}}.profile">
+                                        {{#each availableProfiles}}
+                                        <option value="{{this}}" {{#if (eq this ../profile)}}selected{{/if}}>{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </td>
+                                <td class="ar-lbl">Strike CT</td>
+                                <td class="ar-val ar-strike">{{../combatCT}}</td>
+                                <td class="ar-lbl">Target Range</td>
+                                <td class="ar-val">
+                                    <input type="number" class="ar-input-sm" name="system.attackRefs.{{_idx}}.targetRange" value="{{targetRange}}" min="0" />
+                                </td>
+                            </tr>
+                            {{!-- Row 3: Strike formula and strike dice --}}
+                            <tr>
+                                <td class="ar-lbl">Strike</td>
+                                <td class="ar-val ar-formula ar-strike" colspan="3">{{strikeFormula}} ({{../combatCT}})</td>
+                                <td class="ar-lbl">Strike Crit</td>
+                                <td class="ar-val">{{#if strikeCritical}}{{strikeCritical}}{{else}}-{{/if}}</td>
+                                <td class="ar-lbl">In Melee?</td>
+                                <td class="ar-val">
+                                    <input type="checkbox" class="ar-checkbox" name="system.attackRefs.{{_idx}}.inMelee" {{#if inMelee}}checked{{/if}} />
+                                </td>
+                            </tr>
+                            {{!-- Row 4: Haste, Awareness, Range, Misc Strike --}}
+                            <tr>
+                                <td class="ar-lbl">Haste</td>
+                                <td class="ar-val">{{haste}}</td>
+                                <td class="ar-lbl">Awareness</td>
+                                <td class="ar-val">{{awareness}}</td>
+                                <td class="ar-lbl">Long Range</td>
+                                <td class="ar-val">{{profileRange}}</td>
+                                <td class="ar-lbl">Misc Strike</td>
+                                <td class="ar-val">
+                                    <input type="text" class="ar-input-sm" name="system.attackRefs.{{_idx}}.miscStrike" value="{{miscStrike}}" />
+                                </td>
+                            </tr>
+                            {{!-- Row 5: Wound formula, wound crit, damage category --}}
+                            <tr>
+                                <td class="ar-lbl">Wound</td>
+                                <td class="ar-val ar-formula ar-wound" colspan="3">{{woundFormula}} ({{../combatCT}})</td>
+                                <td class="ar-lbl">Wound Crit</td>
+                                <td class="ar-val ar-wound">{{#if woundCritical}}{{woundCritical}}{{else}}-{{/if}}</td>
+                                <td class="ar-lbl">Dmg Cat.</td>
+                                <td class="ar-val {{damageCatClass}}">{{damageCat}}</td>
+                            </tr>
+                            {{!-- Row 6: Damage attr, charges, total charges, wager --}}
+                            <tr>
+                                <td class="ar-lbl">Dmg Attr</td>
+                                <td class="ar-val">{{damageAttr}}</td>
+                                <td class="ar-lbl">Charges</td>
+                                <td class="ar-val">
+                                    <input type="number" class="ar-input-sm" name="system.attackRefs.{{_idx}}.energyCharges" value="{{energyCharges}}" min="0" max="10" />
+                                </td>
+                                <td class="ar-lbl">Total Charges</td>
+                                <td class="ar-val">{{totalEnergyCharges}}</td>
+                                <td class="ar-lbl">Ki Wager</td>
+                                <td class="ar-val">
+                                    <input type="number" class="ar-input-sm" name="system.attackRefs.{{_idx}}.kiWager" value="{{kiWager}}" min="0" />
+                                </td>
+                            </tr>
+                            {{!-- Row 7: Duel clash, max wager, misc bonuses --}}
+                            <tr>
+                                <td class="ar-lbl">Duel Clash</td>
+                                <td class="ar-val ar-formula" colspan="3">{{clashFormula}} ({{../combatCT}})</td>
+                                <td class="ar-lbl">Max Wager</td>
+                                <td class="ar-val">{{maxWager}}</td>
+                                <td class="ar-lbl">Misc Bonuses</td>
+                                <td class="ar-val">
+                                    <input type="text" class="ar-input-sm" name="system.attackRefs.{{_idx}}.miscBonuses" value="{{miscBonuses}}" />
+                                </td>
+                            </tr>
+                            {{!-- Row 8: Dodge formula, dodge crit, misc wound --}}
+                            <tr>
+                                <td class="ar-lbl">Dodge</td>
+                                <td class="ar-val ar-formula ar-dodge" colspan="3">{{dodgeFormula}} ({{../combatCT}})</td>
+                                <td class="ar-lbl">Dodge Crit</td>
+                                <td class="ar-val ar-dodge">{{#if dodgeCritical}}{{dodgeCritical}}{{else}}-{{/if}}</td>
+                                <td class="ar-lbl">Misc Wound</td>
+                                <td class="ar-val">
+                                    <input type="text" class="ar-input-sm" name="system.attackRefs.{{_idx}}.miscWound" value="{{miscWound}}" />
+                                </td>
+                            </tr>
+                            {{!-- Row: Dice Pool Breakdown --}}
+                            <tr class="ar-dice-pool-row">
+                                <td class="ar-lbl">Strike ToP</td>
+                                <td class="ar-val ar-dice-val">{{strikeTopDiceDisplay}}</td>
+                                <td class="ar-lbl">Strike Greater</td>
+                                <td class="ar-val ar-dice-val">{{strikeGreaterDiceDisplay}}</td>
+                                <td class="ar-lbl">Wound ToP</td>
+                                <td class="ar-val ar-dice-val">{{woundTopDiceDisplay}}</td>
+                                <td class="ar-lbl">Wound Greater</td>
+                                <td class="ar-val ar-dice-val">{{woundGreaterDiceDisplay}}</td>
+                            </tr>
+                            <tr class="ar-dice-pool-row">
+                                <td class="ar-lbl">Dodge ToP</td>
+                                <td class="ar-val ar-dice-val">{{dodgeTopDiceDisplay}}</td>
+                                <td class="ar-lbl">Dodge Greater</td>
+                                <td class="ar-val ar-dice-val">{{dodgeGreaterDiceDisplay}}</td>
+                                <td colspan="4"></td>
+                            </tr>
+                            {{!-- Row 9: Weapons and power shot --}}
+                            <tr>
+                                <td class="ar-lbl">Weapon Equipped</td>
+                                <td class="ar-val" colspan="2">
+                                    <input type="text" class="ar-input" name="system.attackRefs.{{_idx}}.weaponEquipped" value="{{weaponEquippedLabel}}" />
+                                </td>
+                                <td class="ar-val ar-check-cell">
+                                    <input type="checkbox" class="ar-checkbox" name="system.attackRefs.{{_idx}}.weaponCheckbox" {{#if weaponCheckbox}}checked{{/if}} />
+                                </td>
+                                <td class="ar-lbl">Off-Hand</td>
+                                <td class="ar-val" colspan="2">
+                                    <input type="text" class="ar-input" name="system.attackRefs.{{_idx}}.offHand" value="{{offHandLabel}}" />
+                                </td>
+                                <td class="ar-val ar-check-cell">
+                                    <input type="checkbox" class="ar-checkbox" name="system.attackRefs.{{_idx}}.offHandCheckbox" {{#if offHandCheckbox}}checked{{/if}} />
+                                </td>
+                            </tr>
+                            {{!-- Row 10: power shot and misc dodge --}}
+                            <tr>
+                                <td class="ar-lbl">Power Shot</td>
+                                <td class="ar-val">
+                                    <input type="number" class="ar-input-sm" name="system.attackRefs.{{_idx}}.powerShot" value="{{powerShot}}" min="0" />
+                                </td>
+                                <td class="ar-lbl">Wound CT</td>
+                                <td class="ar-val ar-wound">{{../combatCT}}</td>
+                                <td class="ar-lbl">Clash CT</td>
+                                <td class="ar-val">{{../combatCT}}</td>
+                                <td class="ar-lbl">Misc Dodge</td>
+                                <td class="ar-val">
+                                    <input type="text" class="ar-input-sm" name="system.attackRefs.{{_idx}}.miscDodge" value="{{miscDodge}}" />
+                                </td>
+                            </tr>
+                            {{!-- Row 8: Description --}}
+                            <tr>
+                                <td class="ar-lbl">Description</td>
+                                <td colspan="7">
+                                    <textarea class="ar-description" name="system.attackRefs.{{_idx}}.description" rows="2">{{description}}</textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="ar-footer">
+                        <span class="ar-effect-label">Profile Effect:</span>
+                        <span class="ar-effect-text">{{profileEffect}}</span>
+                        <span class="ar-summary">
+                            Defense: <strong>{{defense}}</strong> |
+                            Soak: <strong>{{soak}}</strong> |
+                            Haste: <strong>{{haste}}</strong> |
+                            Awareness: <strong>{{awareness}}</strong> |
+                            Dmg Attr: <strong>{{damageAttr}}</strong>
+                        </span>
+                    </div>
+                </div>
+                {{/each}}
+                {{else}}
+                <div class="attack-ref-empty">No attack references. Click <i class="fas fa-plus"></i> to add one.</div>
+                {{/if}}
+            </div>
+        </div>
+        <div class="ar-right-panel">
+            <div class="section-header">Advantage/Disadvantage Reference</div>
+            <div class="ar-advdis-lookup">
+                <div class="ar-lookup-input-row">
+                    <select id="advdisLookupSelect">
+                        <option value="">-- Select Entry --</option>
+                        <optgroup label="Advantages">
+                            {{#each techAdvantageOptions}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </optgroup>
+                        <optgroup label="Disadvantages">
+                            {{#each techDisadvantageOptions}}
+                            <option value="{{this}}">{{this}}</option>
+                            {{/each}}
+                        </optgroup>
+                    </select>
+                </div>
+                <div id="advdisLookupResult" class="ar-lookup-result">
+                    <div class="ar-lookup-empty">Select an entry to view details</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{!-- Bottom row: State Reference + Resources --}}
+    <div class="ar-bottom-layout">
+        <div class="ar-left-panel">
+            <div class="section-header">State Reference</div>
+            <div class="ar-state-lookup">
+                <div class="ar-lookup-input-row">
+                    <select id="stateLookupSelect">
+                        <option value="">-- Select Condition --</option>
+                        {{#each conditionOptions}}
+                        <option value="{{this}}">{{this}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+                <div id="stateLookupResult" class="ar-lookup-result">
+                    <div class="ar-lookup-empty">Select a condition to view details</div>
+                </div>
+            </div>
+        </div>
+        <div class="ar-right-panel">
+            <div class="section-header">Resources</div>
+            <div class="ar-resources-table">
+                <div class="ar-res-header">
+                    <span>Name</span><span>Stacks</span><span>Max</span><span>Effect</span>
+                </div>
+                <div class="ar-res-list">
+                    {{#each combatResources}}
+                    <div class="ar-res-row">
+                        <span class="ar-res-name">{{sourceName}}</span>
+                        <span class="ar-res-stacks">{{#if maxUses}}0{{else}}--{{/if}}</span>
+                        <span class="ar-res-max">{{#if maxUses}}{{maxUses}}{{else}}--{{/if}}</span>
+                        <span class="ar-res-effect">{{keyword}}</span>
+                    </div>
+                    {{else}}
+                    <div class="ar-res-empty">No resources found</div>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

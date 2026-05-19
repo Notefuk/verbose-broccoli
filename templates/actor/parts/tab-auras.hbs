@@ -1,0 +1,216 @@
+<div class="auras-container">
+
+  {{!-- TP Summary Bar (Shared Pool) --}}
+  <div class="tp-summary-bar">
+    <div class="tp-item">
+      <label>Total TP</label>
+      <span class="tp-value">{{tpTotal}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Signatures</label>
+      <span class="tp-value tp-spent">{{tpSpentSignatures}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Auras</label>
+      <span class="tp-value tp-spent">{{tpSpentAuras}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Unique</label>
+      <span class="tp-value tp-spent">{{tpSpentUnique}}</span>
+    </div>
+    <div class="tp-item tp-remaining-item">
+      <label>Remaining</label>
+      <span class="tp-value {{#if (lt tpRemaining 0)}}tp-over{{/if}}">{{tpRemaining}}</span>
+    </div>
+  </div>
+
+  {{!-- Section Header --}}
+  <div class="section-header">
+    Signature Auras
+    <button type="button" class="add-btn" data-action="add-aura" title="Add Aura"><i class="fas fa-plus"></i></button>
+  </div>
+
+  {{!-- Auras List --}}
+  <div class="auras-list">
+    {{#each signatureAuras}}
+    <div class="signature-aura-card {{#if active}}aura-active{{/if}} {{#if isGained}}gained-ability{{/if}}" data-aura-id="{{id}}" {{#if gainedAuraKey}}data-gained-aura-key="{{gainedAuraKey}}"{{/if}}>
+      <div class="aura-header-bar">
+        <button type="button" class="aura-toggle-btn" data-action="toggle-aura" data-aura-id="{{id}}" {{#if gainedAuraKey}}data-gained-aura-key="{{gainedAuraKey}}"{{/if}}>
+          <i class="fas {{#if active}}fa-bolt{{else}}fa-circle{{/if}}"></i>
+          <span>{{#if active}}ACTIVE{{else}}INACTIVE{{/if}}</span>
+        </button>
+        <span class="aura-name-display">{{name}}</span>
+        {{#if isGained}}<span class="gained-badge"><i class="fas fa-link"></i> Gained from: {{gainedFrom}}</span>{{/if}}
+        <span class="aura-type-badge">{{type}}</span>
+        <span class="aura-tp-badge">TP: {{tpCost}}/{{tpMax}}</span>
+        {{#unless isGained}}
+        <button type="button" class="delete-btn" data-action="delete-aura" data-aura-id="{{id}}">
+          <i class="fas fa-trash"></i>
+        </button>
+        {{/unless}}
+      </div>
+
+      <div class="aura-main-section">
+        {{!-- Left: Info Fields --}}
+        <div class="aura-info-left">
+          <div class="aura-row">
+            <label>Name</label>
+            <input type="text" class="aura-input" data-aura-id="{{id}}" data-field="name" value="{{name}}" />
+          </div>
+          <div class="aura-row">
+            <label>Type</label>
+            <select class="aura-input" data-aura-id="{{id}}" data-field="type">
+              {{selectOptions ../auraTypeOptions selected=type}}
+            </select>
+          </div>
+          {{!-- Aura Type Effect Display --}}
+          {{#if auraTypeEffect}}
+          <div class="aura-row aura-effect-row">
+            <label>Effect</label>
+            <span class="aura-type-effect">{{auraTypeEffect}}</span>
+          </div>
+          {{/if}}
+          {{!-- Description --}}
+          <div class="aura-row aura-desc-row">
+            <label>Description</label>
+            <textarea class="aura-input aura-description" data-aura-id="{{id}}" data-field="description" rows="2">{{description}}</textarea>
+          </div>
+        </div>
+
+        {{!-- Right: Cost Display --}}
+        <div class="aura-info-right">
+          <div class="aura-cost-row">
+            <label>TP Cost</label>
+            <span class="aura-tp-display">{{tpCost}}</span>
+          </div>
+          <div class="aura-cost-row">
+            <label>TP Max</label>
+            <input type="number" class="aura-input" data-aura-id="{{id}}" data-field="tpMax" value="{{tpMax}}" min="0" />
+          </div>
+          <div class="aura-cost-row">
+            <label>Free TP</label>
+            <input type="number" class="aura-input" data-aura-id="{{id}}" data-field="freeTP" value="{{freeTP}}" min="0" />
+          </div>
+          <div class="aura-cost-row">
+            <label>Base KP</label>
+            <span class="cost-value">{{baseKP}}(T)</span>
+          </div>
+          <div class="aura-cost-row">
+            <label>Calculated KP</label>
+            <span class="aura-kp-calculated">{{calculatedKP}}(T)</span>
+          </div>
+          <div class="aura-cost-row">
+            <label>TP Saved</label>
+            <span class="aura-kp-reduction-display">{{kpReduction}}</span>
+          </div>
+          <div class="aura-cost-row">
+            <label>Efficiency</label>
+            <span class="aura-efficiency-display">{{efficiency}}(T)</span>
+          </div>
+          <div class="aura-cost-row">
+            <label>Dynamic Ki</label>
+            <span class="cost-value">{{dynamicKi}}</span>
+          </div>
+          <div class="aura-cost-row">
+            <label>Final KP</label>
+            <span class="aura-final-kp">{{finalKP}}(T)</span>
+          </div>
+          <div class="aura-cost-row">
+            <label>Maintenance</label>
+            <span class="aura-maintenance-kp">{{maintenanceKP}}(T)</span>
+          </div>
+        </div>
+      </div>
+
+      {{!-- Advantages/Disadvantages --}}
+      <div class="tech-advdis-section">
+        <div class="advdis-header">
+          Advantages
+          <button type="button" class="add-btn add-adv-btn" data-action="add-aura-advantage" data-aura-id="{{id}}"><i class="fas fa-plus"></i></button>
+        </div>
+        <table class="advdis-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Ranks</th>
+              <th>Notes</th>
+              <th>Req.</th>
+              <th>TP</th>
+              <th>Dyn.</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each advantages}}
+            <tr data-adv-index="{{@index}}">
+              <td>
+                <select class="aura-adv-input" data-aura-id="{{../id}}" data-adv-index="{{@index}}" data-field="name">
+                  <option value="">-- Select --</option>
+                  {{#each ../../auraAdvantageOptions}}
+                  <option value="{{this}}" {{#if (eq this ../name)}}selected{{/if}}>{{this}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td><input type="number" class="aura-adv-input" data-aura-id="{{../id}}" data-adv-index="{{@index}}" data-field="ranks" value="{{ranks}}" min="1" /></td>
+              <td><input type="text" class="aura-adv-input" data-aura-id="{{../id}}" data-adv-index="{{@index}}" data-field="notes" value="{{notes}}" /></td>
+              <td class="adv-req">{{requirement}}</td>
+              <td class="adv-tp">{{tpCost}}</td>
+              <td><input type="number" class="aura-adv-input adv-dtp" data-aura-id="{{../id}}" data-adv-index="{{@index}}" data-field="dynamicTP" value="{{dynamicTP}}" /></td>
+              <td>
+                <button type="button" class="delete-btn" data-action="remove-aura-advantage" data-aura-id="{{../id}}" data-adv-index="{{@index}}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+
+        <div class="advdis-header">
+          Disadvantages
+          <button type="button" class="add-btn add-disadv-btn" data-action="add-aura-disadvantage" data-aura-id="{{id}}"><i class="fas fa-plus"></i></button>
+        </div>
+        <table class="advdis-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Ranks</th>
+              <th>Notes</th>
+              <th>Req.</th>
+              <th>TP</th>
+              <th>Dyn.</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each disadvantages}}
+            <tr data-disadv-index="{{@index}}">
+              <td>
+                <select class="aura-disadv-input" data-aura-id="{{../id}}" data-disadv-index="{{@index}}" data-field="name">
+                  <option value="">-- Select --</option>
+                  {{#each ../../auraDisadvantageOptions}}
+                  <option value="{{this}}" {{#if (eq this ../name)}}selected{{/if}}>{{this}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td><input type="number" class="aura-disadv-input" data-aura-id="{{../id}}" data-disadv-index="{{@index}}" data-field="ranks" value="{{ranks}}" min="1" /></td>
+              <td><input type="text" class="aura-disadv-input" data-aura-id="{{../id}}" data-disadv-index="{{@index}}" data-field="notes" value="{{notes}}" /></td>
+              <td class="disadv-req">{{requirement}}</td>
+              <td class="disadv-tp">{{tpCost}}</td>
+              <td><input type="number" class="aura-disadv-input disadv-dtp" data-aura-id="{{../id}}" data-disadv-index="{{@index}}" data-field="dynamicTP" value="{{dynamicTP}}" /></td>
+              <td>
+                <button type="button" class="delete-btn" data-action="remove-aura-disadvantage" data-aura-id="{{../id}}" data-disadv-index="{{@index}}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {{else}}
+    <div class="empty-message">No signature auras. Click <i class="fas fa-plus"></i> to add one.</div>
+    {{/each}}
+  </div>
+</div>

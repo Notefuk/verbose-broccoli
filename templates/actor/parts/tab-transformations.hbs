@@ -1,0 +1,333 @@
+<div class="transformations-container">
+
+  {{!-- Header Bar --}}
+  <div class="tf-header">
+    <div class="tf-header-item">
+      <label>Stress Bonus</label>
+      <span class="tf-stress-value">+{{stressBonus}}</span>
+    </div>
+    {{#if transformationRules.combinedStressTest}}
+    <div class="tf-header-item">
+      <label>Combined ST</label>
+      <span class="tf-stress-value tf-combined-st">{{transformationRules.combinedStressTest}}</span>
+    </div>
+    {{/if}}
+    {{#if transformationRules.stepByStepReduction}}
+    <div class="tf-header-item">
+      <label>Step-by-Step</label>
+      <span class="tf-stress-value tf-step-value">-{{transformationRules.stepByStepReduction}}</span>
+    </div>
+    {{/if}}
+    <div class="tf-header-item">
+      <label>Null Weakening</label>
+      <input type="checkbox" name="system.transformationMeta.nullWeakening" {{checked system.transformationMeta.nullWeakening}} />
+    </div>
+    <div class="tf-header-item">
+      <label>Ki Mult. Override</label>
+      <input type="text" name="system.transformationMeta.kiMultOverride" value="{{system.transformationMeta.kiMultOverride}}" placeholder="--" />
+    </div>
+  </div>
+
+  {{!-- Active Rules Indicators --}}
+  {{#if activeTransformations.length}}
+  <div class="tf-rules-bar">
+    {{#if transformationRules.kiMultiplierActive}}
+    <span class="tf-rule-tag tf-rule-positive" title="Ki Multiplier: Max KP x2, Max Capacity x1.5">
+      <i class="fas fa-bolt"></i> Ki Multiplier
+    </span>
+    {{/if}}
+    {{#if transformationRules.turbulentPowerActive}}
+    <span class="tf-rule-tag tf-rule-warning" title="Turbulent Power: Stress Test at the start of each turn">
+      <i class="fas fa-exclamation-triangle"></i> Turbulent Power
+    </span>
+    {{/if}}
+    {{#if transformationMeta.burstLimitUsed}}
+    <span class="tf-rule-tag tf-rule-used" title="Burst Limit used this encounter ({{transformationMeta.burstLimitSource}})">
+      <i class="fas fa-fire"></i> Burst Used
+    </span>
+    {{/if}}
+    <div class="tf-rule-tracking">
+      <span class="tf-rule-mini" title="Surging Strength: {{transformationMeta.surgingStrengthEncounter}}/3 Encounter, {{transformationMeta.surgingStrengthRound}}/1 Round">
+        <i class="fas fa-forward"></i> Surge {{transformationMeta.surgingStrengthEncounter}}/3
+      </span>
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- Active Aspects --}}
+  {{#if activeTransformations.length}}
+  <div class="tf-aspects">
+    <label>Active:</label>
+    {{#each activeTransformations}}
+    <div class="tf-active-entry">
+      <span class="tf-active-tag {{#if isLegendary}}tf-active-legendary{{/if}}">
+        {{name}} <small>({{typeName}})</small>
+        {{#if masteryData}}<span class="mastery-badge" title="{{masteryData.name}}">MASTERED</span>{{/if}}
+      </span>
+      {{#if aspects.length}}
+      <div class="tf-aspects-list">
+        {{#each aspects}}
+        <span class="tf-aspect-tag" title="{{aspectTooltip this}}">{{this}}</span>
+        {{/each}}
+      </div>
+      {{/if}}
+      {{#if masteryData}}
+      <div class="mastery-effects-summary">
+        {{#each masteryData.aspectsToRemove}}
+        <span class="mastery-tag mastery-remove" title="Removed by mastery"><i class="fas fa-minus-circle"></i> {{this}}</span>
+        {{/each}}
+        {{#each masteryData.aspectsToAdd}}
+        <span class="mastery-tag mastery-add" title="Added by mastery"><i class="fas fa-plus-circle"></i> {{this}}</span>
+        {{/each}}
+        {{#each masteryData.attrBonusEntries}}
+        <span class="mastery-tag mastery-attr" title="Mastery attribute bonus"><i class="fas fa-arrow-up"></i> {{this.attr}} {{this.value}}</span>
+        {{/each}}
+        {{#if masteryData.conditionals.length}}
+        <span class="mastery-tag mastery-conditional" title="Conditional mastery effects"><i class="fas fa-cogs"></i> {{masteryData.conditionals.length}} conditional(s)</span>
+        {{/if}}
+        {{#if masteryData.narrative.length}}
+        <span class="mastery-tag mastery-narrative" title="Narrative mastery effects"><i class="fas fa-book"></i> {{masteryData.narrative.length}} narrative</span>
+        {{/if}}
+      </div>
+      {{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{!-- Aspect Effects Summary --}}
+  {{#if activeTransformations.length}}
+  <div class="tf-aspect-effects">
+    {{#if aspectEffects.highSpeedLevel}}
+    <span class="tf-effect-tag tf-effect-positive" title="High Speed LV{{aspectEffects.highSpeedLevel}}: +{{aspectEffects.highSpeedBonus}} Speed">
+      <i class="fas fa-wind"></i> Speed +{{aspectEffects.highSpeedBonus}}
+    </span>
+    {{/if}}
+    {{#each aspectEffects.enhancedSaves}}
+    <span class="tf-effect-tag tf-effect-positive" title="Enhanced Save: +1(T) {{this}}">
+      <i class="fas fa-shield-alt"></i> {{this}} Save
+    </span>
+    {{/each}}
+    {{#if aspectEffects.bulkyCount}}
+    <span class="tf-effect-tag tf-effect-positive" title="Bulky: +{{aspectEffects.bulkyCount}} Super Stack(s)">
+      <i class="fas fa-dumbbell"></i> Bulky x{{aspectEffects.bulkyCount}}
+    </span>
+    {{/if}}
+    {{#if aspectEffects.armoredActive}}
+    <span class="tf-effect-tag tf-effect-positive" title="Armored: Reduce Damage Category by 1">
+      <i class="fas fa-shield-alt"></i> Armored
+    </span>
+    {{/if}}
+    {{#if aspectEffects.drainingLevel}}
+    <span class="tf-effect-tag tf-effect-negative" title="Draining LV{{aspectEffects.drainingLevel}}: -{{aspectEffects.drainingKiPerTurn}} Ki/turn">
+      <i class="fas fa-bolt"></i> -{{aspectEffects.drainingKiPerTurn}} Ki/turn
+    </span>
+    {{/if}}
+    {{#if aspectEffects.weakeningActive}}
+    <span class="tf-effect-tag tf-effect-negative" title="Weakening: AMB halved when Ki < 1/4 max">
+      <i class="fas fa-arrow-down"></i> Weakening
+    </span>
+    {{/if}}
+    {{#if aspectEffects.heartbeatActive}}
+    <span class="tf-effect-tag tf-effect-heartbeat" title="Heartbeat: Surging Strength 3/Rnd, ignores Encounter limit">
+      <i class="fas fa-heartbeat"></i> Heartbeat
+    </span>
+    {{/if}}
+    {{#if aspectEffects.noLpRegen}}
+    <span class="tf-effect-tag tf-effect-negative tf-effect-danger" title="Cannot regain Life Points">
+      <i class="fas fa-heart-broken"></i> No LP Regen
+    </span>
+    {{/if}}
+    {{#each aspectEffects.gradedTransformations}}
+    <span class="tf-effect-tag tf-effect-graded" title="{{name}} Grade {{grade}} ({{gradeEntry.multiplier}}) — LP Cost: {{lpCostNum}} ({{lpCostFormula}})">
+      <i class="fas fa-layer-group"></i> {{name}} G{{grade}} ({{gradeEntry.multiplier}}) | LP: {{lpCostNum}}
+    </span>
+    {{/each}}
+    {{#if aspectEffects.crimsonAcclimationActive}}
+    <span class="tf-effect-tag tf-effect-negative" title="Crimson Acclimation: +2 Combined ST, +2(bT) LP Cost">
+      <i class="fas fa-exclamation-triangle"></i> Crimson Acclimation
+    </span>
+    {{/if}}
+    {{#if aspectEffects.lightDependentActive}}
+    <span class="tf-effect-tag tf-effect-negative" title="Light Dependent: -5(bT) Max Capacity when no Power stacks">
+      <i class="fas fa-sun"></i> Light Dependent{{#unless (lookup ../system.tracking "powerStacks")}} (ACTIVE: -Cap){{/unless}}
+    </span>
+    {{/if}}
+    {{#if aspectEffects.weakeningTriggered}}
+    <span class="tf-effect-tag tf-effect-negative" title="Weakening ACTIVE: KP below 1/4 max — Transformation Attribute Bonuses halved">
+      <i class="fas fa-arrow-down"></i> Weakening (Attr ÷2)
+    </span>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{!-- Section Header --}}
+  <div class="section-header">
+    Transformations
+    <button type="button" class="add-btn" data-action="open-transformation-catalog" title="Add Transformation"><i class="fas fa-plus"></i></button>
+  </div>
+
+  {{!-- Transformations Table --}}
+  <div class="tf-table-container">
+    <table class="tf-table">
+      <thead>
+        <tr>
+          <th class="tf-th-name">Name</th>
+          <th class="tf-th-check">Active</th>
+          <th class="tf-th-small">Grade</th>
+          <th class="tf-th-small">Tier</th>
+          <th class="tf-th-check">Mast.</th>
+          <th class="tf-th-small">Stress</th>
+          <th class="tf-th-type">Type</th>
+          <th class="tf-th-attr">AG</th>
+          <th class="tf-th-attr">FO</th>
+          <th class="tf-th-attr">TE</th>
+          <th class="tf-th-attr">SC</th>
+          <th class="tf-th-attr">IN</th>
+          <th class="tf-th-attr">MA</th>
+          <th class="tf-th-attr">PE</th>
+          <th class="tf-th-traits">Traits</th>
+          <th class="tf-th-del"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{!-- All Transformations (standard + legendary unified) --}}
+        {{#each allTransformations}}
+        <tr class="tf-row {{#if isLegendary}}tf-legendary-row{{/if}} {{#if active}}tf-active-row{{/if}} {{#if masteryData}}tf-mastered-row{{/if}} {{#if isGained}}gained-ability{{/if}}" data-trans-index="{{transIndex}}" {{#if gainedKey}}data-gained-key="{{gainedKey}}"{{/if}}>
+          <td class="tf-cell-name">
+            {{#if hasCatalog}}<span class="tf-catalog-badge" title="From catalog: {{catalogKey}}"><i class="fas fa-book"></i></span>{{/if}}
+            {{#if isGained}}<span class="gained-badge"><i class="fas fa-link"></i> {{gainedFrom}}</span>{{/if}}
+            <input type="text" class="tf-input tf-name-input" data-trans-index="{{transIndex}}" data-field="name" value="{{name}}" />
+            {{#if gainedFoMaBonuses}}
+            {{#each gainedFoMaBonuses}}
+            <span class="tf-foma-badge" title="+1(T) FO/MA from {{fromName}}'s {{transName}}"><i class="fas fa-arrow-up"></i> +1(T)</span>
+            {{/each}}
+            {{/if}}
+          </td>
+          <td class="tf-cell-check"><input type="checkbox" class="tf-check" data-trans-index="{{transIndex}}" {{#if gainedKey}}data-gained-key="{{gainedKey}}"{{/if}} data-field="active" {{#if active}}checked{{/if}} /></td>
+          <td><input type="text" class="tf-input tf-small" data-trans-index="{{transIndex}}" data-field="gradeOrStacks" value="{{gradeOrStacks}}" /></td>
+          <td><input type="text" class="tf-input tf-small" data-trans-index="{{transIndex}}" data-field="tierRequirement" value="{{tierRequirement}}" /></td>
+          <td class="tf-cell-check"><input type="checkbox" class="tf-check" data-trans-index="{{transIndex}}" data-field="mastered" {{#if mastered}}checked{{/if}} /></td>
+          <td><input type="number" class="tf-input tf-small" data-trans-index="{{transIndex}}" data-field="stressTest" value="{{stressTest}}" /></td>
+          <td>
+            <select class="tf-input" data-trans-index="{{transIndex}}" data-field="transformationType">
+              {{selectOptions ../transformationTypeOptions selected=transformationType}}
+            </select>
+          </td>
+          <td><input type="text" class="tf-input tf-attr" data-trans-index="{{transIndex}}" data-field="attrBonuses.ag" value="{{attrBonuses.ag}}" /></td>
+          <td><input type="text" class="tf-input tf-attr" data-trans-index="{{transIndex}}" data-field="attrBonuses.fo" value="{{attrBonuses.fo}}" /></td>
+          <td><input type="text" class="tf-input tf-attr" data-trans-index="{{transIndex}}" data-field="attrBonuses.te" value="{{attrBonuses.te}}" /></td>
+          <td><input type="text" class="tf-input tf-attr" data-trans-index="{{transIndex}}" data-field="attrBonuses.sc" value="{{attrBonuses.sc}}" /></td>
+          <td><input type="text" class="tf-input tf-attr" data-trans-index="{{transIndex}}" data-field="attrBonuses.in" value="{{attrBonuses.in}}" /></td>
+          <td><input type="text" class="tf-input tf-attr" data-trans-index="{{transIndex}}" data-field="attrBonuses.ma" value="{{attrBonuses.ma}}" /></td>
+          <td><input type="text" class="tf-input tf-attr" data-trans-index="{{transIndex}}" data-field="attrBonuses.pe" value="{{attrBonuses.pe}}" /></td>
+          <td class="tf-cell-traits">
+            {{#if hasStructuredTraits}}
+            <div class="tf-structured-traits-preview">
+              <span class="tf-trait-count">{{effectCount}} effects</span>
+              <button type="button" class="tf-expand-traits-btn" data-action="view-transformation-traits" data-trans-index="{{transIndex}}" title="View traits"><i class="fas fa-eye"></i></button>
+            </div>
+            {{else}}
+            <textarea class="tf-input tf-traits-textarea" data-trans-index="{{transIndex}}" data-field="traits" rows="1">{{traits}}</textarea>
+            {{/if}}
+          </td>
+          {{#unless isGained}}
+          <td class="tf-cell-del">
+            <button type="button" class="delete-btn" data-action="delete-transformation" data-trans-index="{{transIndex}}"><i class="fas fa-trash"></i></button>
+          </td>
+          {{else}}
+          <td class="tf-cell-del"></td>
+          {{/unless}}
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  {{!-- Token Album --}}
+  <div class="section tf-token-images-section">
+    <div class="section-header">
+      Token Images
+      <button type="button" class="add-btn" data-action="add-token-album-entry" title="Add Token Image"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <div class="tfi-list">
+      {{#each tokenAlbumEntries}}
+      <div class="tfi-entry" data-album-index="{{@index}}">
+        {{#if image}}
+        <img class="tfi-thumb" src="{{image}}" alt="{{name}}" />
+        {{else}}
+        <div class="tfi-thumb tfi-thumb-empty"><i class="fas fa-image"></i></div>
+        {{/if}}
+        <input type="text" class="tfi-name-input" data-album-index="{{@index}}" data-field="name" value="{{name}}" placeholder="Name..." />
+        <button type="button" class="tfi-browse-btn" data-action="browse-album-image" data-album-index="{{@index}}" title="Browse image"><i class="fas fa-folder-open"></i></button>
+        <button type="button" class="tfi-activate-btn {{#if isActive}}tfi-active{{/if}}" data-action="activate-album-token" data-album-index="{{@index}}" title="{{#if isActive}}Active{{else}}Activate{{/if}}"><i class="fas fa-check-circle"></i></button>
+        <button type="button" class="tfi-remove-btn" data-action="remove-album-entry" data-album-index="{{@index}}" title="Remove"><i class="fas fa-trash"></i></button>
+      </div>
+      {{/each}}
+    </div>
+
+    {{#if hasActiveAlbumToken}}
+    <button type="button" class="tfi-restore-btn" data-action="restore-original-token" title="Restore original token image"><i class="fas fa-undo"></i> Restore Original</button>
+    {{/if}}
+  </div>
+
+  {{!-- Legendary Traits (Permanent) --}}
+  <div class="section tf-legendary-section">
+    <div class="section-header">Legendary Traits (Permanent)</div>
+
+    {{!-- Legendary Trait Selection dropdowns (for forms with multiple choices) --}}
+    {{#each legendaryTraitOptions}}
+    <div class="lt-selector">
+      <label>{{this.name}}:</label>
+      <select class="lt-trait-select" data-catalog-key="{{@key}}">
+        {{#each this.options}}
+        <option value="{{this}}" {{#if (eq this ../this.selected)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
+      </select>
+    </div>
+    {{/each}}
+
+    {{!-- Active Legendary Trait bonuses --}}
+    {{#if legendaryTraitBonuses.hasBonuses}}
+    <div class="lt-entries">
+      {{#each legendaryTraitBonuses.entries}}
+      <div class="lt-entry">
+        <div class="lt-entry-header">
+          <span class="lt-entry-name">{{name}}</span>
+          <span class="lt-entry-source">{{sourceName}}</span>
+        </div>
+        {{#if bonuses.length}}
+        <div class="lt-bonuses">
+          {{#each bonuses}}<span class="lt-bonus-tag">{{this}}</span>{{/each}}
+        </div>
+        {{/if}}
+        {{#if conditionals.length}}
+        <div class="lt-conditionals">
+          {{#each conditionals}}<span class="lt-conditional-tag">{{this}}</span>{{/each}}
+        </div>
+        {{/if}}
+        {{#if triggered.length}}
+        <div class="lt-triggered">
+          {{#each triggered}}<span class="lt-triggered-tag"><i class="fas fa-bolt"></i> {{this.name}} [{{this.usageLimit}}]</span>{{/each}}
+        </div>
+        {{/if}}
+      </div>
+      {{/each}}
+    </div>
+
+    {{!-- Totals --}}
+    <div class="lt-totals">
+      {{#if legendaryTraitBonuses.totals.soak}}<span class="lt-total">Soak: +{{legendaryTraitBonuses.totals.soak}}</span>{{/if}}
+      {{#if legendaryTraitBonuses.totals.defense}}<span class="lt-total">Defense: +{{legendaryTraitBonuses.totals.defense}}</span>{{/if}}
+      {{#if legendaryTraitBonuses.totals.strike}}<span class="lt-total">Strike: +{{legendaryTraitBonuses.totals.strike}}</span>{{/if}}
+      {{#if legendaryTraitBonuses.totals.might}}<span class="lt-total">Might: +{{legendaryTraitBonuses.totals.might}}</span>{{/if}}
+      {{#if legendaryTraitBonuses.totals.combatRolls}}<span class="lt-total">Combat Rolls: +{{legendaryTraitBonuses.totals.combatRolls}}</span>{{/if}}
+      {{#if legendaryTraitBonuses.totals.steadfast}}<span class="lt-total">Steadfast: +{{legendaryTraitBonuses.totals.steadfast}}</span>{{/if}}
+      {{#if legendaryTraitBonuses.totals.stressBonus}}<span class="lt-total">Stress: +{{legendaryTraitBonuses.totals.stressBonus}}</span>{{/if}}
+    </div>
+    {{else}}
+    <div class="lt-empty">No legendary traits active. Add a Legendary Form transformation to gain permanent traits.</div>
+    {{/if}}
+  </div>
+</div>

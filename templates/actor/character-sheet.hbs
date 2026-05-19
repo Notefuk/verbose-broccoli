@@ -1,0 +1,191 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <div class="dbu-old-sheet">
+    {{!-- ==================== HEADER ==================== --}}
+    <header class="sheet-header flexrow">
+      <div class="header-bg"></div>
+      <div class="header-left portrait-container">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        <div class="tier-overlay-badge">T<span>{{system.tier}}</span></div>
+        <div class="level-overlay-badge">Lv.<span>{{system.level}}</span></div>
+      </div>
+      <div class="header-center">
+        <h1 class="character-name">
+          <input name="name" type="text" value="{{actor.name}}" placeholder="Character Name" />
+        </h1>
+        <div class="character-info">
+          <span class="tier-badge">Tier: <span>{{system.tier}}</span></span>
+          <span class="level-badge">Level:
+            <input type="number" name="system.level" value="{{system.level}}" min="1" max="30" />
+          </span>
+        </div>
+        {{#if activeAura}}
+        <div id="activeAuraDisplay" class="active-aura-display">
+          <div class="active-aura-tag">
+            <i class="fas fa-sun"></i> Active Aura: <span id="activeAuraName">{{activeAura.name}}</span>
+          </div>
+        </div>
+        {{/if}}
+      </div>
+      <div class="header-right">
+        <div class="resource-bars">
+          <div class="resource life">
+            <label>Life Points</label>
+            <div class="visual-bar-wrapper">
+              <div class="visual-bar-fill life-fill" style="width: {{lpPercent}}%"></div>
+              <div class="visual-bar-content">
+                <input type="number" class="current" name="system.lifePoints.value"
+                  value="{{system.lifePoints.value}}" />
+                <span class="bar-separator">/</span>
+                <span class="max">{{system.lifePoints.max}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="resource ki">
+            <label>Ki Pool</label>
+            <div class="visual-bar-wrapper">
+              <div class="visual-bar-fill ki-fill" style="width: {{kiPercent}}%"></div>
+              <div class="visual-bar-content">
+                <input type="number" class="current" name="system.kiPool.value" value="{{system.kiPool.value}}" />
+                <span class="bar-separator">/</span>
+                <span class="max">{{system.kiPool.max}}</span>
+              </div>
+            </div>
+          </div>
+          {{#if system.godKi.active}}
+          <div class="resource dkp">
+            <label>Divine Ki</label>
+            <div class="visual-bar-wrapper">
+              <div class="visual-bar-fill dkp-fill" style="width: {{dkpPercent}}%"></div>
+              <div class="visual-bar-content">
+                <input type="number" class="current" name="system.divineKiPoints.value" value="{{system.divineKiPoints.value}}" />
+                <span class="bar-separator">/</span>
+                <span class="max">{{system.divineKiPoints.max}}</span>
+              </div>
+            </div>
+          </div>
+          {{/if}}
+        </div>
+      </div>
+    </header>
+
+    {{!-- ==================== CREDIT ==================== --}}
+    <div class="sheet-credit">Created by MRR/ArdillaTactica</div>
+
+    {{!-- ==================== TAB NAVIGATION ==================== --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+      <a class="tab-item" data-tab="main"><i class="fas fa-user"></i> Main</a>
+      <a class="tab-item" data-tab="skills"><i class="fas fa-book"></i> Skills</a>
+      <a class="tab-item" data-tab="techniques"><i class="fas fa-bolt"></i> Techniques</a>
+      <a class="tab-item" data-tab="transformations"><i class="fas fa-dragon"></i> Transformations</a>
+      <a class="tab-item" data-tab="trait"><i class="fas fa-dna"></i> Traits</a>
+      <a class="tab-item" data-tab="talent"><i class="fas fa-star"></i> Talents</a>
+      <a class="tab-item" data-tab="aura"><i class="fas fa-fire"></i> Auras</a>
+      <a class="tab-item" data-tab="unique"><i class="fas fa-gem"></i> Unique Abilities</a>
+      <a class="tab-item" data-tab="equipment"><i class="fas fa-shield-alt"></i> Equipment</a>
+      <a class="tab-item" data-tab="attackRef"><i class="fas fa-fist-raised"></i> Attack Ref</a>
+      <a class="tab-item" data-tab="progression"><i class="fas fa-chart-line"></i> Progression</a>
+      <a class="tab-item" data-tab="bio"><i class="fas fa-scroll"></i> Bio</a>
+      <a class="tab-item" data-tab="combat"><i class="fas fa-crosshairs"></i> Combat</a>
+      <a class="tab-item" data-tab="fusion"><i class="fas fa-atom"></i> Fusion</a>
+      <a class="tab-item" data-tab="adversary"><i class="fas fa-skull-crossbones"></i> Adversary</a>
+      <a class="tab-item" data-tab="downtime"><i class="fas fa-hourglass-half"></i> Downtime</a>
+      <a class="tab-item" data-tab="tfCustomize"><i class="fas fa-sliders-h"></i> TF Customize</a>
+      <a class="tab-item" data-tab="battleJacket"><i class="fas fa-robot"></i> Battle Jacket</a>
+    </nav>
+
+    {{!-- ==================== TAB CONTENT ==================== --}}
+    <section class="sheet-body">
+
+      {{!-- MAIN TAB --}}
+      <div class="tab" data-group="primary" data-tab="main">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-main.hbs"}}
+      </div>
+
+      {{!-- SKILLS TAB --}}
+      <div class="tab" data-group="primary" data-tab="skills">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-skills.hbs"}}
+      </div>
+
+      {{!-- TECHNIQUES TAB --}}
+      <div class="tab" data-group="primary" data-tab="techniques">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-techniques.hbs"}}
+      </div>
+
+      {{!-- TRANSFORMATIONS TAB --}}
+      <div class="tab" data-group="primary" data-tab="transformations">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-transformations.hbs"}}
+      </div>
+
+      {{!-- TRAITS TAB --}}
+      <div class="tab" data-group="primary" data-tab="trait">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-traits.hbs"}}
+      </div>
+
+      {{!-- TALENTS TAB --}}
+      <div class="tab" data-group="primary" data-tab="talent">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-talents.hbs"}}
+      </div>
+
+      {{!-- AURAS TAB --}}
+      <div class="tab" data-group="primary" data-tab="aura">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-auras.hbs"}}
+      </div>
+
+      {{!-- UNIQUE ABILITIES TAB --}}
+      <div class="tab" data-group="primary" data-tab="unique">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-unique.hbs"}}
+      </div>
+
+      {{!-- EQUIPMENT TAB --}}
+      <div class="tab" data-group="primary" data-tab="equipment">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-equipment.hbs"}}
+      </div>
+
+      {{!-- ATTACK REF TAB --}}
+      <div class="tab" data-group="primary" data-tab="attackRef">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-attack-ref.hbs"}}
+      </div>
+
+      {{!-- PROGRESSION TAB --}}
+      <div class="tab" data-group="primary" data-tab="progression">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-progression.hbs"}}
+      </div>
+
+      {{!-- BIO TAB --}}
+      <div class="tab" data-group="primary" data-tab="bio">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-bio.hbs"}}
+      </div>
+
+      {{!-- COMBAT TAB --}}
+      <div class="tab" data-group="primary" data-tab="combat">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-combat.hbs"}}
+      </div>
+
+      {{!-- FUSION TAB --}}
+      <div class="tab" data-group="primary" data-tab="fusion">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-fusion.hbs"}}
+      </div>
+
+      {{!-- ADVERSARY TAB --}}
+      <div class="tab" data-group="primary" data-tab="adversary">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-adversary.hbs"}}
+      </div>
+
+      {{!-- DOWNTIME TAB --}}
+      <div class="tab" data-group="primary" data-tab="downtime">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-downtime.hbs"}}
+      </div>
+
+      {{!-- TRANSFORMATION CUSTOMIZATION TAB --}}
+      <div class="tab" data-group="primary" data-tab="tfCustomize">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-tf-customize.hbs"}}
+      </div>
+
+      {{!-- BATTLE JACKET TAB --}}
+      <div class="tab" data-group="primary" data-tab="battleJacket">
+        {{> "systems/DBU-MRR-OLD/templates/actor/parts/tab-battlejacket.hbs"}}
+      </div>
+
+    </section>
+  </div>
+</form>

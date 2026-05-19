@@ -1,0 +1,258 @@
+<div class="adversary-container">
+
+  {{!-- MASTER TOGGLE --}}
+  <div class="adversary-toggle-bar">
+    <label class="adversary-master-toggle">
+      <input type="checkbox" name="system.adversary.enabled" {{#if system.adversary.enabled}}checked{{/if}} />
+      Enable Adversary System (ARC Only)
+    </label>
+  </div>
+
+  {{#if system.adversary.enabled}}
+
+  {{!-- ==================== CONFIGURATION ==================== --}}
+  <div class="adversary-section config">
+    <div class="section-header">Adversary Configuration</div>
+    <div class="adversary-config-grid">
+      <div class="config-item">
+        <label>Category</label>
+        <select name="system.adversary.category">
+          {{selectOptions adversaryCategoryOptions selected=system.adversary.category}}
+        </select>
+      </div>
+      <div class="config-item">
+        <label>Difficulty Level</label>
+        <select name="system.adversary.difficultyLevel">
+          {{selectOptions adversaryDifficultyOptions selected=system.adversary.difficultyLevel}}
+        </select>
+      </div>
+      <div class="config-item">
+        <label>Party Size</label>
+        <input type="number" name="system.adversary.partySize" value="{{system.adversary.partySize}}" min="1" />
+      </div>
+    </div>
+
+    {{!-- Stats Summary --}}
+    <div class="adversary-stats-summary">
+      <div class="stat-item">
+        <span class="stat-label">LP Bonus:</span>
+        <span class="stat-value">{{adversaryLPBonus}}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">KP Bonus:</span>
+        <span class="stat-value">{{adversaryKPBonus}}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">PL Bonus:</span>
+        <span class="stat-value">+{{system.adversary.plBonus}}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Trait Slots:</span>
+        <span class="stat-value">{{system.adversary.traitSlots}}</span>
+      </div>
+    </div>
+  </div>
+
+  {{!-- ==================== PARTY RULES ==================== --}}
+  {{#if (eq system.adversary.category "villain")}}
+  <div class="adversary-section party-rules">
+    <div class="section-header">Party Rules</div>
+    <div class="party-rules-grid">
+      <label class="party-rule-item">
+        <input type="checkbox" name="system.adversary.partyRules.narrativeStamina" {{#if system.adversary.partyRules.narrativeStamina}}checked{{/if}} />
+        <div class="rule-info">
+          <span class="rule-name">Narrative Stamina</span>
+          <span class="rule-desc">Temp LP: {{system.adversary.narrativeStaminaLP}} / Temp KP: {{system.adversary.narrativeStaminaKP}} per round</span>
+        </div>
+      </label>
+      <label class="party-rule-item">
+        <input type="checkbox" name="system.adversary.partyRules.oneManArmy" {{#if system.adversary.partyRules.oneManArmy}}checked{{/if}} />
+        <div class="rule-info">
+          <span class="rule-name">One-Man Army</span>
+          <span class="rule-desc">+{{system.adversary.extraCounterActions}} Counter Actions per round</span>
+        </div>
+      </label>
+      <label class="party-rule-item">
+        <input type="checkbox" name="system.adversary.partyRules.villainousKarma" {{#if system.adversary.partyRules.villainousKarma}}checked{{/if}} />
+        <div class="rule-info">
+          <span class="rule-name">Villainous Karma</span>
+          <span class="rule-desc">{{system.adversary.karmaPoints}} Karma Points per encounter</span>
+        </div>
+      </label>
+      <label class="party-rule-item">
+        <input type="checkbox" name="system.adversary.partyRules.withoutCapacity" {{#if system.adversary.partyRules.withoutCapacity}}checked{{/if}} />
+        <div class="rule-info">
+          <span class="rule-name">Without Capacity</span>
+          <span class="rule-desc">Ignore Capacity rules entirely</span>
+        </div>
+      </label>
+    </div>
+  </div>
+  {{else if (eq system.adversary.category "superior")}}
+  <div class="adversary-section party-rules">
+    <div class="section-header">Party Rules</div>
+    <div class="party-rules-grid">
+      <label class="party-rule-item">
+        <input type="checkbox" name="system.adversary.partyRules.narrativeStamina" {{#if system.adversary.partyRules.narrativeStamina}}checked{{/if}} />
+        <div class="rule-info">
+          <span class="rule-name">Narrative Stamina</span>
+          <span class="rule-desc">Temp LP: {{system.adversary.narrativeStaminaLP}} / Temp KP: {{system.adversary.narrativeStaminaKP}} per round</span>
+        </div>
+      </label>
+      <label class="party-rule-item">
+        <input type="checkbox" name="system.adversary.partyRules.oneManArmy" {{#if system.adversary.partyRules.oneManArmy}}checked{{/if}} />
+        <div class="rule-info">
+          <span class="rule-name">One-Man Army</span>
+          <span class="rule-desc">+{{system.adversary.extraCounterActions}} Counter Actions per round</span>
+        </div>
+      </label>
+      <label class="party-rule-item">
+        <input type="checkbox" name="system.adversary.partyRules.villainousKarma" {{#if system.adversary.partyRules.villainousKarma}}checked{{/if}} />
+        <div class="rule-info">
+          <span class="rule-name">Villainous Karma</span>
+          <span class="rule-desc">{{system.adversary.karmaPoints}} Karma Points per encounter</span>
+        </div>
+      </label>
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== VILLAINOUS TRAITS ==================== --}}
+  <div class="adversary-section villainous-traits">
+    <div class="section-header">
+      Villainous Traits ({{adversaryTraits.length}}/{{system.adversary.traitSlots}} slots)
+      <button type="button" class="add-btn" data-action="add-villainous-trait" title="Add Villainous Trait"><i class="fas fa-plus"></i></button>
+    </div>
+    <div class="traits-list">
+      {{#if (gt adversaryTraits.length 0)}}
+        {{#each adversaryTraits}}
+        <div class="trait-card villainous" data-trait-id="{{id}}">
+          <div class="trait-header">
+            <span class="trait-category-badge {{category}}">{{category}}</span>
+            <span class="trait-name">{{name}}</span>
+            <button type="button" class="trait-expand" data-action="toggle-villainous-trait" title="Expand/Collapse">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <button type="button" class="delete-btn item-delete" data-action="delete-villainous-trait" data-trait-id="{{id}}" title="Remove Trait">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{#if description}}
+          <div class="trait-description">{{description}}</div>
+          {{/if}}
+          <div class="trait-effects-list">
+            {{#each effects}}
+            <div class="trait-effect {{activationType}}">
+              <span class="effect-keyword {{activationType}}">[{{keyword}}]</span>
+              <span class="effect-text">{{{text}}}</span>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{/each}}
+      {{else}}
+        <div class="empty-message">No villainous traits selected. Click <i class="fas fa-plus"></i> to add traits.</div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ==================== WEAKNESSES ==================== --}}
+  <div class="adversary-section weaknesses">
+    <div class="section-header">
+      Weaknesses ({{adversaryWeaknesses.length}} — each grants +1 trait slot)
+      <button type="button" class="add-btn" data-action="add-weakness" title="Add Weakness"><i class="fas fa-plus"></i></button>
+    </div>
+    <div class="traits-list">
+      {{#if (gt adversaryWeaknesses.length 0)}}
+        {{#each adversaryWeaknesses}}
+        <div class="trait-card weakness" data-trait-id="{{id}}">
+          <div class="trait-header">
+            <span class="trait-category-badge weakness">weakness</span>
+            <span class="trait-name">{{name}}</span>
+            <button type="button" class="trait-expand" data-action="toggle-weakness" title="Expand/Collapse">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <button type="button" class="delete-btn item-delete" data-action="delete-weakness" data-trait-id="{{id}}" title="Remove Weakness">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{#if description}}
+          <div class="trait-description">{{description}}</div>
+          {{/if}}
+          <div class="trait-effects-list">
+            {{#each effects}}
+            <div class="trait-effect {{activationType}}">
+              <span class="effect-keyword {{activationType}}">[{{keyword}}]</span>
+              <span class="effect-text">{{{text}}}</span>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{/each}}
+      {{else}}
+        <div class="empty-message">No weaknesses selected.</div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ==================== DANGEROUS MINIONS ==================== --}}
+  <div class="adversary-section minions">
+    <div class="section-header">Dangerous Minions</div>
+    <div class="minion-toggle-bar">
+      <label>
+        <input type="checkbox" name="system.adversary.minion.enabled" {{#if system.adversary.minion.enabled}}checked{{/if}} />
+        Enable Dangerous Minion Rules
+      </label>
+    </div>
+
+    {{#if system.adversary.minion.enabled}}
+    <div class="minion-config">
+      <div class="config-item">
+        <label>Danger Level</label>
+        <select name="system.adversary.minion.dangerLevel">
+          {{selectOptions minionDangerOptions selected=system.adversary.minion.dangerLevel}}
+        </select>
+      </div>
+      <div class="minion-stats-summary">
+        <span>PL Modifier: {{formatMod system.adversary.minion.plModifier}}</span>
+        <span>LP Modifier: {{formatMod system.adversary.minion.lpModifier}} per PL</span>
+      </div>
+    </div>
+
+    <div class="section-subheader">
+      Minion Traits
+      <button type="button" class="add-btn" data-action="add-minion-trait" title="Add Minion Trait"><i class="fas fa-plus"></i></button>
+    </div>
+    <div class="traits-list">
+      {{#if (gt minionTraitsData.length 0)}}
+        {{#each minionTraitsData}}
+        <div class="trait-card minion" data-trait-id="{{id}}">
+          <div class="trait-header">
+            <span class="trait-category-badge minion">minion</span>
+            <span class="trait-name">{{name}}</span>
+            <button type="button" class="delete-btn item-delete" data-action="delete-minion-trait" data-trait-id="{{id}}" title="Remove Trait">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{#if description}}
+          <div class="trait-description">{{description}}</div>
+          {{/if}}
+          <div class="trait-effects-list">
+            {{#each effects}}
+            <div class="trait-effect {{activationType}}">
+              <span class="effect-keyword {{activationType}}">[{{keyword}}]</span>
+              <span class="effect-text">{{{text}}}</span>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{/each}}
+      {{else}}
+        <div class="empty-message">No minion traits selected.</div>
+      {{/if}}
+    </div>
+    {{/if}}
+  </div>
+
+  {{/if}}
+</div>

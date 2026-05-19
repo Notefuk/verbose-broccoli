@@ -1,0 +1,223 @@
+<div class="progression-container">
+
+  {{!-- Summary Bar --}}
+  <div class="progression-summary">
+    <div class="summary-item">
+      <label>Current Level</label>
+      <span class="summary-value">{{system.level}}</span>
+    </div>
+    <div class="summary-item">
+      <label>Current Tier</label>
+      <span class="summary-value">{{system.tier}}</span>
+    </div>
+    <div class="summary-item">
+      <label>Total Attr Points</label>
+      <span class="summary-value">{{totalAttrPoints}}</span>
+    </div>
+    <div class="summary-item">
+      <label>Total Skill Points</label>
+      <span class="summary-value">{{totalSkillRanks}}</span>
+    </div>
+    <div class="summary-item">
+      <label>Total Tech Points</label>
+      <span class="summary-value">{{totalTP}}</span>
+    </div>
+  </div>
+
+  {{!-- Progression Preview --}}
+  <div class="section-header">Progression Preview</div>
+  <div class="progression-preview">
+    <table class="progression-table preview-table">
+      <thead>
+        <tr>
+          <th>Level</th>
+          <th>Talents</th>
+          <th>AG</th>
+          <th>FO</th>
+          <th>TE</th>
+          <th>SC</th>
+          <th>IN</th>
+          <th>MA</th>
+          <th>PE</th>
+          <th>TP</th>
+          <th>Skill Ranks</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each progressionPreview}}
+        <tr class="preview-row {{#if isCurrent}}preview-current{{/if}}">
+          <td>{{level}}</td>
+          <td class="talent-preview">{{talents}}</td>
+          <td>{{ag}}</td>
+          <td>{{fo}}</td>
+          <td>{{te}}</td>
+          <td>{{sc}}</td>
+          <td>{{in}}</td>
+          <td>{{ma}}</td>
+          <td>{{pe}}</td>
+          <td>{{tp}}</td>
+          <td class="skill-preview">{{skillRanks}}</td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  {{!-- Main Progression Table --}}
+  <div class="section-header">
+    Main Progression
+  </div>
+
+  <div class="progression-table-container">
+    <table class="progression-table main-progression">
+      <thead>
+        <tr>
+          <th class="col-level">Level</th>
+          <th class="col-perk">Character Perk</th>
+          <th class="col-talent">Talents</th>
+          <th class="col-attr">AG</th>
+          <th class="col-attr">FO</th>
+          <th class="col-attr">TE</th>
+          <th class="col-attr">SC</th>
+          <th class="col-attr">IN</th>
+          <th class="col-attr">MA</th>
+          <th class="col-attr">PE</th>
+          <th class="col-tp">TP</th>
+          <th class="col-skill" colspan="6">Skill Ranks</th>
+          <th class="col-del"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{!-- Racial Stats row: outside the loop, writes directly to system.attributes.X.racial --}}
+        {{#if showRacialStatsRow}}
+        <tr class="progression-row current-level" data-perk="racial_stats">
+          <td class="col-level">1</td>
+          <td class="col-perk"><span style="opacity:0.6;">Racial Stats</span></td>
+          <td class="col-talent dim">—</td>
+          <td class="col-attr"><input type="number" name="system.attributes.ag.racial" value="{{system.attributes.ag.racial}}" /></td>
+          <td class="col-attr"><input type="number" name="system.attributes.fo.racial" value="{{system.attributes.fo.racial}}" /></td>
+          <td class="col-attr"><input type="number" name="system.attributes.te.racial" value="{{system.attributes.te.racial}}" /></td>
+          <td class="col-attr"><input type="number" name="system.attributes.sc.racial" value="{{system.attributes.sc.racial}}" /></td>
+          <td class="col-attr"><input type="number" name="system.attributes.in.racial" value="{{system.attributes.in.racial}}" /></td>
+          <td class="col-attr"><input type="number" name="system.attributes.ma.racial" value="{{system.attributes.ma.racial}}" /></td>
+          <td class="col-attr"><input type="number" name="system.attributes.pe.racial" value="{{system.attributes.pe.racial}}" /></td>
+          <td class="col-tp dim">—</td>
+          <td class="col-skill dim" colspan="6">—</td>
+          <td class="col-del"></td>
+        </tr>
+        {{/if}}
+        {{#each progressionRows}}
+        {{#if (eq perkType "starting_stats")}}
+        {{!-- Locked row: only racial skill slots, no attrs/perkType/delete --}}
+        <tr class="progression-row current-level" data-row-index="{{@index}}" data-perk="starting_stats">
+          <td class="col-level">1</td>
+          <td class="col-perk"><span style="opacity:0.6;">Racial Skills</span></td>
+          <td class="col-talent dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-tp dim">—</td>
+          {{#each skillSlots}}
+            {{#if active}}
+            <td class="col-skill">
+              <select name="{{fieldName}}" class="skill-rank-input">
+                <option value="">—</option>
+                {{#each ../../availableSkills}}
+                <option value="{{this}}" {{#if (eq this ../value)}}selected{{/if}}>{{this}}</option>
+                {{/each}}
+              </select>
+            </td>
+            {{else}}
+            <td class="col-skill dim">—</td>
+            {{/if}}
+          {{/each}}
+          <td class="col-del"></td>
+        </tr>
+        {{else}}
+        <tr class="progression-row {{#if (lte level ../system.level)}}current-level{{else}}future-level{{/if}}" data-row-index="{{@index}}" data-perk="{{perkType}}">
+          <td class="col-level">
+            <input type="number" name="system.progressionRows.{{@index}}.level" value="{{level}}" min="1" max="30" />
+          </td>
+          <td class="col-perk">
+            <select name="system.progressionRows.{{@index}}.perkType">
+              {{selectOptions ../perkTypeOptions selected=perkType}}
+            </select>
+          </td>
+          {{!-- Talent: autocomplete input with datalist --}}
+          {{#if showTalent}}
+          <td class="col-talent">
+            <input type="text" name="system.progressionRows.{{@index}}.talent" value="{{talent}}" list="talent-datalist" class="talent-select" placeholder="Type to search..." autocomplete="off" />
+          </td>
+          {{else}}
+          <td class="col-talent dim">—</td>
+          {{/if}}
+          {{!-- Attributes: visible for attribute_addition --}}
+          {{#if showAttrs}}
+          <td class="col-attr"><input type="number" name="system.progressionRows.{{@index}}.ag" value="{{ag}}" /></td>
+          <td class="col-attr"><input type="number" name="system.progressionRows.{{@index}}.fo" value="{{fo}}" /></td>
+          <td class="col-attr"><input type="number" name="system.progressionRows.{{@index}}.te" value="{{te}}" /></td>
+          <td class="col-attr"><input type="number" name="system.progressionRows.{{@index}}.sc" value="{{sc}}" /></td>
+          <td class="col-attr"><input type="number" name="system.progressionRows.{{@index}}.in" value="{{in}}" /></td>
+          <td class="col-attr"><input type="number" name="system.progressionRows.{{@index}}.ma" value="{{ma}}" /></td>
+          <td class="col-attr"><input type="number" name="system.progressionRows.{{@index}}.pe" value="{{pe}}" /></td>
+          {{else}}
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          <td class="col-attr dim">—</td>
+          {{/if}}
+          {{!-- TP: visible for skill_improvement --}}
+          {{#if showTP}}
+          <td class="col-tp"><input type="number" name="system.progressionRows.{{@index}}.tp" value="{{tp}}" /></td>
+          {{else}}
+          <td class="col-tp dim">—</td>
+          {{/if}}
+          {{!-- Skills: dropdown selects with active/dim slots based on maxSkillSlots --}}
+          {{#if showSkills}}
+          {{#each skillSlots}}
+            {{#if active}}
+            <td class="col-skill">
+              <select name="{{fieldName}}" class="skill-rank-input">
+                <option value="">—</option>
+                {{#each ../../availableSkills}}
+                <option value="{{this}}" {{#if (eq this ../value)}}selected{{/if}}>{{this}}</option>
+                {{/each}}
+              </select>
+            </td>
+            {{else}}
+            <td class="col-skill dim">—</td>
+            {{/if}}
+          {{/each}}
+          {{else}}
+          <td class="col-skill dim" colspan="6">—</td>
+          {{/if}}
+          <td class="col-del">
+            <button type="button" class="delete-btn" data-action="delete-progression-row" data-index="{{@index}}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+        {{/if}}
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="progression-controls">
+    <button type="button" class="add-row-btn" data-action="add-progression-row"><i class="fas fa-plus"></i> Add Row</button>
+  </div>
+
+  <datalist id="talent-datalist">
+    {{#each talentOptionGroups}}
+    {{#each talents}}
+    <option value="{{name}}">{{name}}</option>
+    {{/each}}
+    {{/each}}
+  </datalist>
+</div>

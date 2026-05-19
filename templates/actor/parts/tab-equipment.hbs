@@ -1,0 +1,415 @@
+<div class="equipment-container">
+
+  {{!-- Worn Equipment Layer System --}}
+  <div class="eq-worn-section">
+    <div class="section-header">Battle Uniform</div>
+    <div class="eq-worn-header">
+      <span class="eq-layer-penalty-label">Layer Penalty:
+        <strong class="{{#if (gt equipment.layerPenalty 0)}}eq-penalty-active{{/if}}">
+          {{#if (gt equipment.layerPenalty 0)}}-{{equipment.layerPenalty}}{{else}}0{{/if}}
+        </strong>
+      </span>
+      <span class="eq-dr-label">Equipment DR: <strong>{{equipment.dr}}</strong></span>
+      <span class="eq-combat-penalty-label">Combat Penalty:
+        <strong class="{{#if (gt equipment.combatPenalty 0)}}eq-penalty-active{{/if}}">
+          {{#if (gt equipment.combatPenalty 0)}}-{{equipment.combatPenalty}}{{else}}0{{/if}}
+        </strong>
+      </span>
+    </div>
+    <table class="eq-worn-table">
+      <thead>
+        <tr>
+          <th>Layer</th><th>Apparel</th><th>Category</th><th>Benefit</th>
+          <th>BV</th><th>Doff</th><th>Grade</th><th>Qualities</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each wornLayers}}
+        <tr class="eq-worn-row {{#if isSelected}}eq-worn-selected{{/if}}" data-layer="{{key}}">
+          <td class="eq-layer-label">{{label}}</td>
+          <td>
+            <select class="eq-layer-select" data-action="assign-layer" data-layer="{{key}}">
+              <option value="">-- None --</option>
+              {{#each ../apparelOptions}}
+              <option value="{{id}}" {{#if (eq id ../assignedId)}}selected{{/if}}>{{name}}</option>
+              {{/each}}
+            </select>
+          </td>
+          <td>{{categoryName}}</td>
+          <td>{{benefit}}</td>
+          <td>{{#if assigned}}{{bvCurrent}}/{{bvMax}}{{/if}}</td>
+          <td>{{doffStatus}}</td>
+          <td>{{gradeLabel}}</td>
+          <td class="eq-worn-quals">{{qualitiesSummary}}</td>
+          <td>{{#if assigned}}<button type="button" class="eq-detail-btn" data-action="toggle-detail" data-layer="{{key}}" title="Detail"><i class="fas fa-eye"></i></button>{{/if}}</td>
+        </tr>
+        {{/each}}
+        {{#each accessorySlots}}
+        <tr class="eq-worn-row eq-acc-row" data-layer="{{key}}">
+          <td class="eq-layer-label">{{label}}</td>
+          <td>
+            <select class="eq-layer-select" data-action="assign-layer" data-layer="{{key}}">
+              <option value="">-- None --</option>
+              {{#each ../accessoryOptions}}
+              <option value="{{id}}" {{#if (eq id ../assignedId)}}selected{{/if}}>{{name}}</option>
+              {{/each}}
+            </select>
+          </td>
+          <td colspan="6">{{#if assigned}}{{effect}}{{/if}}</td>
+          <td></td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  {{!-- Battle Uniform Detail (hidden by default, shown when eye icon clicked) --}}
+  {{#if battleUniformDetail}}
+  <div class="eq-battle-detail">
+    <div class="section-header">Detail -- {{battleUniformDetail.name}}</div>
+    <div class="eq-detail-grid">
+      <div class="eq-detail-field"><label>Category</label><span>{{battleUniformDetail.categoryName}}</span></div>
+      <div class="eq-detail-field"><label>Effect</label><span>{{battleUniformDetail.categoryEffect}}</span></div>
+      <div class="eq-detail-field"><label>Grade</label><span>{{battleUniformDetail.gradeLabel}}</span></div>
+      <div class="eq-detail-field"><label>Apparel Bonus</label><span class="eq-highlight">{{battleUniformDetail.apparelBonus}}</span></div>
+      <div class="eq-detail-field"><label>Break Value</label><span><input type="number" class="eq-bv-input" data-item-id="{{battleUniformDetail.itemId}}" value="{{battleUniformDetail.bvCurrent}}" min="0" max="{{battleUniformDetail.bvMax}}"> / {{battleUniformDetail.bvMax}}</span></div>
+      <div class="eq-detail-field"><label>Doff Bonus</label><span>{{battleUniformDetail.doffBonus}} <small>({{battleUniformDetail.doffStatus}})</small></span></div>
+    </div>
+    <div class="eq-qualities-section">
+      <div class="eq-qualities-header">Qualities <span class="eq-slots-badge">{{battleUniformDetail.slotsUsed}}/{{battleUniformDetail.slotsMax}} slots</span></div>
+      <table class="eq-qualities-table">
+        <thead><tr><th>Name</th><th>Notes</th><th>Effect</th><th>Slots</th><th></th></tr></thead>
+        <tbody>
+          {{#each battleUniformDetail.qualities}}
+          <tr>
+            <td>{{name}}</td>
+            <td><input type="text" class="eq-quality-notes" data-item-id="{{../battleUniformDetail.itemId}}" data-quality-idx="{{@index}}" value="{{notes}}" placeholder="Notes"></td>
+            <td>{{effect}}</td>
+            <td>{{slotsUsed}}</td>
+            <td><button type="button" class="remove-btn" data-action="remove-quality" data-item-id="{{../battleUniformDetail.itemId}}" data-quality-idx="{{@index}}"><i class="fas fa-times"></i></button></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      {{#if battleUniformDetail.canAddQuality}}
+      <div class="eq-add-quality-row">
+        <select class="eq-add-quality-select">
+          <option value="">-- Add Quality --</option>
+          {{#each battleUniformDetail.availableQualities}}
+          <option value="{{id}}">{{name}} ({{slots}} slot{{#if (gt slots 1)}}s{{/if}})</option>
+          {{/each}}
+        </select>
+        <button type="button" class="add-btn" data-action="add-quality" data-item-id="{{battleUniformDetail.itemId}}"><i class="fas fa-plus"></i></button>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- Apparel Inventory --}}
+  <div class="section-header">
+    Apparel
+    <button type="button" class="add-btn item-create" data-type="equipment" data-eq-type="apparel" title="Add Apparel"><i class="fas fa-plus"></i></button>
+  </div>
+  <div class="eq-apparel-list">
+    {{#each apparelItems}}
+    <div class="eq-item-card eq-apparel-card" data-item-id="{{_id}}">
+      <div class="eq-card-header">
+        <span class="eq-card-name">{{name}}</span>
+        <span class="eq-type-badge apparel-badge">Apparel</span>
+        <div class="eq-card-controls">
+          <label class="eq-worn-label"><input type="checkbox" class="eq-worn-toggle" data-item-id="{{_id}}" {{#if system.worn}}checked{{/if}} /> Worn</label>
+          <a class="item-delete" data-item-id="{{_id}}" title="Delete"><i class="fas fa-trash"></i></a>
+        </div>
+      </div>
+      <div class="eq-card-body">
+        <div class="eq-fields-grid">
+          <div class="eq-field">
+            <label>Name</label>
+            <input type="text" class="eq-inline-input" data-item-id="{{_id}}" data-field="name" value="{{name}}" />
+          </div>
+          <div class="eq-field">
+            <label>Category</label>
+            <select class="eq-inline-input" data-item-id="{{_id}}" data-field="system.apparelCategory">
+              <option value="armor" {{#if (eq system.apparelCategory "armor")}}selected{{/if}}>Armor</option>
+              <option value="weights" {{#if (eq system.apparelCategory "weights")}}selected{{/if}}>Weights</option>
+              <option value="combat_clothing" {{#if (eq system.apparelCategory "combat_clothing")}}selected{{/if}}>Combat Clothing</option>
+              <option value="standard_clothing" {{#if (eq system.apparelCategory "standard_clothing")}}selected{{/if}}>Standard Clothing</option>
+            </select>
+          </div>
+          <div class="eq-field">
+            <label>Craftsmanship</label>
+            <select class="eq-inline-input" data-item-id="{{_id}}" data-field="system.craftsmanshipGrade">
+              <option value="1" {{#if (eq system.craftsmanshipGrade 1)}}selected{{/if}}>1 - Apprentice</option>
+              <option value="2" {{#if (eq system.craftsmanshipGrade 2)}}selected{{/if}}>2 - Qualified</option>
+              <option value="3" {{#if (eq system.craftsmanshipGrade 3)}}selected{{/if}}>3 - Expert</option>
+              <option value="4" {{#if (eq system.craftsmanshipGrade 4)}}selected{{/if}}>4 - Master</option>
+              <option value="5" {{#if (eq system.craftsmanshipGrade 5)}}selected{{/if}}>5 - Grandmaster</option>
+            </select>
+          </div>
+          <div class="eq-field">
+            <label>Break Value</label>
+            <input type="number" class="eq-inline-input" data-item-id="{{_id}}" data-field="system.breakValueCurrent" value="{{system.breakValueCurrent}}" min="0" max="6" />
+          </div>
+          <div class="eq-field check-field">
+            <label><input type="checkbox" class="eq-inline-check" data-item-id="{{_id}}" data-field="system.doffUsed" {{#if system.doffUsed}}checked{{/if}} /> Doff Used</label>
+          </div>
+        </div>
+        <div class="eq-field full-width">
+          <label>Description</label>
+          <textarea class="eq-inline-input eq-description" data-item-id="{{_id}}" data-field="system.description" rows="1">{{system.description}}</textarea>
+        </div>
+      </div>
+      {{!-- Qualities expandable section --}}
+      <div class="eq-card-qualities-toggle" data-action="toggle-qualities-card" data-item-id="{{_id}}">
+        <i class="fas fa-chevron-{{#if expanded}}up{{else}}down{{/if}}"></i> Qualities ({{qualitiesEnriched.length}} / 3)
+      </div>
+      {{#if expanded}}
+      <div class="eq-card-qualities-section">
+        <table class="eq-qualities-table">
+          <thead><tr><th>Name</th><th>Config</th><th>Notes</th><th>Effect</th><th></th></tr></thead>
+          <tbody>
+            {{#each qualitiesEnriched}}
+            <tr>
+              <td>
+                {{#if isSpecial}}<span class="eq-quality-special-marker" title="Special Quality"><i class="fas fa-star"></i></span>{{/if}}
+                {{catalogName}}
+              </td>
+              <td class="eq-quality-config-cell">
+                {{#each configFields}}
+                  {{#if (eq type "text")}}
+                  <input type="text" class="eq-quality-config-input"
+                         data-item-id="{{../itemId}}" data-q-idx="{{../qIdx}}" data-config-key="{{key}}"
+                         placeholder="{{placeholder}}" value="{{currentValue}}" />
+                  {{else}}
+                  <select class="eq-quality-config-input"
+                          data-item-id="{{../itemId}}" data-q-idx="{{../qIdx}}" data-config-key="{{key}}"
+                          title="{{label}}">
+                    {{#each resolvedOptions}}
+                    <option value="{{value}}" {{#if (eq value ../currentValue)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                  </select>
+                  {{/if}}
+                {{/each}}
+              </td>
+              <td>
+                <input type="text" class="eq-quality-notes-input"
+                       data-item-id="{{itemId}}" data-q-idx="{{qIdx}}"
+                       value="{{notes}}" placeholder="Notes" />
+              </td>
+              <td class="eq-quality-effect" title="{{description}}">{{description}}</td>
+              <td>
+                <button type="button" class="remove-btn"
+                        data-action="remove-item-quality"
+                        data-item-id="{{itemId}}" data-q-idx="{{qIdx}}"
+                        title="Remove"><i class="fas fa-times"></i></button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <div class="eq-add-quality-row">
+          <select class="eq-add-quality-select-standard" data-item-id="{{_id}}">
+            <option value="">-- Add Standard Quality --</option>
+            {{#each availableStandard}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <button type="button" class="add-btn" data-action="add-item-quality" data-item-id="{{_id}}" data-special="false" title="Add Standard Quality"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="eq-add-quality-row">
+          <select class="eq-add-quality-select-special" data-item-id="{{_id}}">
+            <option value="">-- Add Special Quality --</option>
+            {{#each availableSpecial}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <button type="button" class="add-btn" data-action="add-item-quality" data-item-id="{{_id}}" data-special="true" title="Add Special Quality"><i class="fas fa-star"></i></button>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+    {{else}}
+    <div class="empty-message">No apparel. Click <i class="fas fa-plus"></i> to add.</div>
+    {{/each}}
+  </div>
+
+  {{!-- Weapons --}}
+  <div class="section-header">
+    Weapons
+    <button type="button" class="add-btn item-create" data-type="equipment" data-eq-type="weapon" title="Add Weapon"><i class="fas fa-plus"></i></button>
+  </div>
+  <div class="eq-weapons-list">
+    {{#each weaponItems}}
+    <div class="eq-item-card eq-weapon-card" data-item-id="{{_id}}">
+      <div class="eq-card-header">
+        <span class="eq-card-name">{{name}}</span>
+        <span class="eq-type-badge weapon-badge">Weapon</span>
+        <div class="eq-card-controls">
+          <label class="eq-worn-label"><input type="checkbox" class="eq-worn-toggle" data-item-id="{{_id}}" {{#if system.worn}}checked{{/if}} /> Equipped</label>
+          <a class="item-delete" data-item-id="{{_id}}" title="Delete"><i class="fas fa-trash"></i></a>
+        </div>
+      </div>
+      <div class="eq-card-body">
+        <div class="eq-fields-grid">
+          <div class="eq-field">
+            <label>Name</label>
+            <input type="text" class="eq-inline-input" data-item-id="{{_id}}" data-field="name" value="{{name}}" />
+          </div>
+          <div class="eq-field">
+            <label>Weapon Type</label>
+            <select class="eq-inline-input" data-item-id="{{_id}}" data-field="system.weaponType">
+              <option value="physical" {{#if (eq system.weaponType "physical")}}selected{{/if}}>Physical</option>
+              <option value="energy" {{#if (eq system.weaponType "energy")}}selected{{/if}}>Energy</option>
+              <option value="magic" {{#if (eq system.weaponType "magic")}}selected{{/if}}>Magic</option>
+            </select>
+          </div>
+          <div class="eq-field">
+            <label>Category</label>
+            <select class="eq-inline-input" data-item-id="{{_id}}" data-field="system.weaponCategory">
+              <option value="">-- Select --</option>
+              <option value="bludgeoning" {{#if (eq system.weaponCategory "bludgeoning")}}selected{{/if}}>Bludgeoning</option>
+              <option value="slashing" {{#if (eq system.weaponCategory "slashing")}}selected{{/if}}>Slashing</option>
+              <option value="piercing" {{#if (eq system.weaponCategory "piercing")}}selected{{/if}}>Piercing</option>
+              <option value="shield" {{#if (eq system.weaponCategory "shield")}}selected{{/if}}>Shield</option>
+              <option value="efficient" {{#if (eq system.weaponCategory "efficient")}}selected{{/if}}>Efficient</option>
+              <option value="precision" {{#if (eq system.weaponCategory "precision")}}selected{{/if}}>Precision</option>
+              <option value="high_power" {{#if (eq system.weaponCategory "high_power")}}selected{{/if}}>High Power</option>
+              <option value="magic_staff" {{#if (eq system.weaponCategory "magic_staff")}}selected{{/if}}>Magic Staff</option>
+              <option value="elemental_tool" {{#if (eq system.weaponCategory "elemental_tool")}}selected{{/if}}>Elemental Tool</option>
+              <option value="magic_orb" {{#if (eq system.weaponCategory "magic_orb")}}selected{{/if}}>Magic Orb</option>
+            </select>
+          </div>
+          <div class="eq-field">
+            <label>Size</label>
+            <select class="eq-inline-input" data-item-id="{{_id}}" data-field="system.weaponSize">
+              <option value="small" {{#if (eq system.weaponSize "small")}}selected{{/if}}>Small (+1T Strike, -2T Wound)</option>
+              <option value="standard" {{#if (eq system.weaponSize "standard")}}selected{{/if}}>Standard</option>
+              <option value="big" {{#if (eq system.weaponSize "big")}}selected{{/if}}>Big (-1T Strike, +2T Wound)</option>
+            </select>
+          </div>
+          <div class="eq-field">
+            <label>Craftsmanship</label>
+            <select class="eq-inline-input" data-item-id="{{_id}}" data-field="system.craftsmanshipGrade">
+              <option value="1" {{#if (eq system.craftsmanshipGrade 1)}}selected{{/if}}>1 - Apprentice</option>
+              <option value="2" {{#if (eq system.craftsmanshipGrade 2)}}selected{{/if}}>2 - Qualified</option>
+              <option value="3" {{#if (eq system.craftsmanshipGrade 3)}}selected{{/if}}>3 - Expert</option>
+              <option value="4" {{#if (eq system.craftsmanshipGrade 4)}}selected{{/if}}>4 - Master</option>
+              <option value="5" {{#if (eq system.craftsmanshipGrade 5)}}selected{{/if}}>5 - Grandmaster</option>
+            </select>
+          </div>
+        </div>
+        <div class="eq-field full-width">
+          <label>Description</label>
+          <textarea class="eq-inline-input eq-description" data-item-id="{{_id}}" data-field="system.description" rows="1">{{system.description}}</textarea>
+        </div>
+      </div>
+      {{!-- Qualities expandable section --}}
+      <div class="eq-card-qualities-toggle" data-action="toggle-qualities-card" data-item-id="{{_id}}">
+        <i class="fas fa-chevron-{{#if expanded}}up{{else}}down{{/if}}"></i> Qualities ({{qualitiesEnriched.length}} / 3)
+      </div>
+      {{#if expanded}}
+      <div class="eq-card-qualities-section">
+        <table class="eq-qualities-table">
+          <thead><tr><th>Name</th><th>Config</th><th>Notes</th><th>Effect</th><th></th></tr></thead>
+          <tbody>
+            {{#each qualitiesEnriched}}
+            <tr>
+              <td>
+                {{#if isSpecial}}<span class="eq-quality-special-marker" title="Special Quality"><i class="fas fa-star"></i></span>{{/if}}
+                {{catalogName}}
+              </td>
+              <td class="eq-quality-config-cell">
+                {{#each configFields}}
+                  {{#if (eq type "text")}}
+                  <input type="text" class="eq-quality-config-input"
+                         data-item-id="{{../itemId}}" data-q-idx="{{../qIdx}}" data-config-key="{{key}}"
+                         placeholder="{{placeholder}}" value="{{currentValue}}" />
+                  {{else}}
+                  <select class="eq-quality-config-input"
+                          data-item-id="{{../itemId}}" data-q-idx="{{../qIdx}}" data-config-key="{{key}}"
+                          title="{{label}}">
+                    {{#each resolvedOptions}}
+                    <option value="{{value}}" {{#if (eq value ../currentValue)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                  </select>
+                  {{/if}}
+                {{/each}}
+              </td>
+              <td>
+                <input type="text" class="eq-quality-notes-input"
+                       data-item-id="{{itemId}}" data-q-idx="{{qIdx}}"
+                       value="{{notes}}" placeholder="Notes" />
+              </td>
+              <td class="eq-quality-effect" title="{{description}}">{{description}}</td>
+              <td>
+                <button type="button" class="remove-btn"
+                        data-action="remove-item-quality"
+                        data-item-id="{{itemId}}" data-q-idx="{{qIdx}}"
+                        title="Remove"><i class="fas fa-times"></i></button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <div class="eq-add-quality-row">
+          <select class="eq-add-quality-select-standard" data-item-id="{{_id}}">
+            <option value="">-- Add Standard Quality --</option>
+            {{#each availableStandard}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <button type="button" class="add-btn" data-action="add-item-quality" data-item-id="{{_id}}" data-special="false" title="Add Standard Quality"><i class="fas fa-plus"></i></button>
+        </div>
+        <div class="eq-add-quality-row">
+          <select class="eq-add-quality-select-special" data-item-id="{{_id}}">
+            <option value="">-- Add Special Quality --</option>
+            {{#each availableSpecial}}
+            <option value="{{id}}">{{name}}</option>
+            {{/each}}
+          </select>
+          <button type="button" class="add-btn" data-action="add-item-quality" data-item-id="{{_id}}" data-special="true" title="Add Special Quality"><i class="fas fa-star"></i></button>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+    {{else}}
+    <div class="empty-message">No weapons. Click <i class="fas fa-plus"></i> to add.</div>
+    {{/each}}
+  </div>
+
+  {{!-- Accessories --}}
+  <div class="section-header">
+    Accessories
+    <button type="button" class="add-btn item-create" data-type="equipment" data-eq-type="accessory" title="Add Accessory"><i class="fas fa-plus"></i></button>
+  </div>
+  <div class="eq-accessories-list">
+    {{#each accessoryItems}}
+    <div class="eq-item-card eq-accessory-card" data-item-id="{{_id}}">
+      <div class="eq-card-header">
+        <span class="eq-card-name">{{name}}</span>
+        <span class="eq-type-badge accessory-badge">Accessory</span>
+        <div class="eq-card-controls">
+          <label class="eq-worn-label"><input type="checkbox" class="eq-worn-toggle" data-item-id="{{_id}}" {{#if system.worn}}checked{{/if}} /> Equipped</label>
+          <a class="item-delete" data-item-id="{{_id}}" title="Delete"><i class="fas fa-trash"></i></a>
+        </div>
+      </div>
+      <div class="eq-card-body">
+        <div class="eq-fields-grid">
+          <div class="eq-field">
+            <label>Name</label>
+            <input type="text" class="eq-inline-input" data-item-id="{{_id}}" data-field="name" value="{{name}}" />
+          </div>
+          <div class="eq-field full-width">
+            <label>Effect</label>
+            <textarea class="eq-inline-input eq-description" data-item-id="{{_id}}" data-field="system.description" rows="1">{{system.description}}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{else}}
+    <div class="empty-message">No accessories. Click <i class="fas fa-plus"></i> to add.</div>
+    {{/each}}
+  </div>
+
+</div>

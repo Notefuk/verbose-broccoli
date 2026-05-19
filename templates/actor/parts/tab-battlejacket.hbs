@@ -1,0 +1,171 @@
+<div class="tab-battlejacket">
+
+  {{!-- STATE: Stale link (jacket was deleted) --}}
+  {{#if bjStaleLink}}
+  <div class="bj-no-jacket bj-stale-warning">
+    <h3><i class="fas fa-exclamation-triangle"></i> Battle Jacket</h3>
+    <p class="bj-stale-msg">The linked Battle Jacket no longer exists.</p>
+    <button type="button" data-action="unlink-jacket" class="bj-btn danger"><i class="fas fa-unlink"></i> Clear Stale Link</button>
+  </div>
+  {{/if}}
+
+  {{!-- STATE: No jacket linked --}}
+  {{#unless bjLinked}}
+  <div class="bj-no-jacket">
+    <h3><i class="fas fa-robot"></i> Battle Jacket</h3>
+    {{#unless bjStaleLink}}<p>No Battle Jacket linked. Select one to link:</p>{{/unless}}
+    {{#if bjAvailableJackets.length}}
+    <div class="bj-link-controls">
+      <select class="bj-jacket-select">
+        <option value="">-- Select Battle Jacket --</option>
+        {{#each bjAvailableJackets}}
+        <option value="{{this.id}}">{{this.name}}</option>
+        {{/each}}
+      </select>
+      <button type="button" data-action="link-jacket"><i class="fas fa-link"></i> Link</button>
+    </div>
+    {{else}}
+    <p class="bj-no-jackets-msg"><i>No available Battle Jacket actors found. Create one from the Actors Directory.</i></p>
+    {{/if}}
+  </div>
+  {{/unless}}
+
+  {{!-- STATE: Jacket linked --}}
+  {{#if bjLinked}}
+  {{#with bjJacket}}
+
+  <div class="bj-header">
+    <img src="{{this.img}}" class="bj-portrait" />
+    <div class="bj-header-info">
+      <h3>{{this.name}}</h3>
+      <div class="bj-header-tags">
+        <span class="bj-tag">{{this.grade}}</span>
+        <span class="bj-tag">{{this.frame}}</span>
+        <span class="bj-tag">{{this.engine}}</span>
+        <span class="bj-tag">JT {{this.jacketTier}}</span>
+        <span class="bj-tag">Size: {{this.sizeCategory}}</span>
+      </div>
+    </div>
+    <div class="bj-header-actions">
+      {{#if ../bjPiloting}}
+      <div class="bj-piloting-badge"><i class="fas fa-robot"></i> PILOTING</div>
+      <button type="button" data-action="exit-jacket" class="bj-btn danger"><i class="fas fa-sign-out-alt"></i> Exit Jacket</button>
+      {{else}}
+      <button type="button" data-action="enter-jacket" class="bj-btn primary"><i class="fas fa-sign-in-alt"></i> Enter Jacket</button>
+      <button type="button" data-action="unlink-jacket" class="bj-btn"><i class="fas fa-unlink"></i> Unlink</button>
+      {{/if}}
+      <button type="button" data-action="open-jacket-sheet" class="bj-btn"><i class="fas fa-external-link-alt"></i> Open Sheet</button>
+    </div>
+  </div>
+
+  <div class="bj-resources">
+    <div class="resource life">
+      <label>Jacket LP</label>
+      <div class="visual-bar-wrapper">
+        <div class="visual-bar-fill life-fill" style="width: {{this.lpPercent}}%"></div>
+        <div class="visual-bar-content">
+          <input type="number" class="current bj-lp-input" value="{{this.lp.value}}" data-jacket-id="{{this.id}}" />
+          <span class="bar-separator">/</span>
+          <span class="max">{{this.lp.max}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="resource ki">
+      <label>Jacket KP</label>
+      <div class="visual-bar-wrapper">
+        <div class="visual-bar-fill ki-fill" style="width: {{this.kpPercent}}%"></div>
+        <div class="visual-bar-content">
+          <input type="number" class="current bj-kp-input" value="{{this.kp.value}}" data-jacket-id="{{this.id}}" />
+          <span class="bar-separator">/</span>
+          <span class="max">{{this.kp.max}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{#if ../bjPiloting}}
+  <div class="bj-combat-stats">
+    <h4><i class="fas fa-shield-alt"></i> Jacket Combat Stats</h4>
+    {{#if ../bjPenalty}}
+    <div class="bj-penalty-indicator">
+      <i class="fas fa-exclamation-triangle"></i> Battle Jacket Penalty: -{{../bjPenalty}} Combat Rolls
+    </div>
+    {{/if}}
+    {{#if ../bjPenaltyRemoved}}
+    <div class="bj-penalty-removed">
+      <i class="fas fa-check"></i> Expert Pilot: Penalty Removed
+    </div>
+    {{/if}}
+    <div class="bj-stats-grid">
+      <div class="bj-stat"><label>Awareness</label><span>{{this.awareness}}</span></div>
+      <div class="bj-stat"><label>Haste</label><span>{{this.haste}}</span></div>
+      <div class="bj-stat"><label>Soak</label><span>{{this.soak}}</span></div>
+      <div class="bj-stat"><label>Defense Value</label><span>{{this.defenseValue}}</span></div>
+      <div class="bj-stat"><label>Damage Reduction</label><span>{{this.damageReduction}}</span></div>
+      <div class="bj-stat"><label>Normal Speed</label><span>{{this.normalSpeed}}</span></div>
+      <div class="bj-stat"><label>Boosted Speed</label><span>{{this.boostedSpeed}}</span></div>
+      <div class="bj-stat"><label>Might</label><span>{{this.might}}</span></div>
+    </div>
+  </div>
+
+  <div class="bj-thresholds">
+    <h4><i class="fas fa-heartbeat"></i> Health Thresholds</h4>
+    <div class="bj-stats-row">
+      <span><b>Bruised:</b> {{this.healthThresholds.bruised}}</span>
+      <span><b>Injured:</b> {{this.healthThresholds.injured}}</span>
+      <span><b>Critical:</b> {{this.healthThresholds.critical}}</span>
+    </div>
+  </div>
+
+  <div class="bj-weakpoints">
+    <h4><i class="fas fa-bullseye"></i> Weak Points</h4>
+    <label>
+      <input type="checkbox" class="bj-weakpoint-toggle" data-field="frameDisabled" data-jacket-id="{{this.id}}" {{#if this.weakPoints.frameDisabled}}checked{{/if}} />
+      Frame Disabled
+    </label>
+    <label>
+      <input type="checkbox" class="bj-weakpoint-toggle" data-field="engineDisabled" data-jacket-id="{{this.id}}" {{#if this.weakPoints.engineDisabled}}checked{{/if}} />
+      Engine Disabled
+    </label>
+  </div>
+  {{/if}}
+
+  <div class="bj-modules-display">
+    <h4><i class="fas fa-puzzle-piece"></i> Modules</h4>
+    {{#if this.uniqueFrameModule}}
+    <div class="bj-module-card unique {{#if this.weakPoints.frameDisabled}}disabled{{/if}}">
+      <span class="module-tag">Frame</span> <b>{{this.uniqueFrameModule.name}}</b>
+      {{#if this.weakPoints.frameDisabled}}<span class="disabled-tag">(DISABLED)</span>{{/if}}
+    </div>
+    {{/if}}
+    {{#if this.uniqueEngineModule}}
+    <div class="bj-module-card unique {{#if this.weakPoints.engineDisabled}}disabled{{/if}}">
+      <span class="module-tag">Engine</span> <b>{{this.uniqueEngineModule.name}}</b>
+      {{#if this.weakPoints.engineDisabled}}<span class="disabled-tag">(DISABLED)</span>{{/if}}
+    </div>
+    {{/if}}
+    {{#each this.installedModules}}
+    <div class="bj-module-card standard">
+      <b>{{this.name}}</b>
+    </div>
+    {{/each}}
+  </div>
+
+  {{#if ../bjPiloting}}
+  <div class="bj-gained-abilities">
+    <h4><i class="fas fa-bolt"></i> Jacket Abilities</h4>
+    {{#if this.signatureTechniques.length}}
+    <div><b>Techniques:</b> {{#each this.signatureTechniques}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}</div>
+    {{/if}}
+    {{#if this.signatureAuras.length}}
+    <div><b>Auras:</b> {{#each this.signatureAuras}}{{this.name}}{{#unless @last}}, {{/unless}}{{/each}}</div>
+    {{/if}}
+    {{#if this.uniqueAbilities.length}}
+    <div><b>Unique Abilities:</b> {{#each this.uniqueAbilities}}{{this.resolvedName}}{{#unless @last}}, {{/unless}}{{/each}}</div>
+    {{/if}}
+  </div>
+  {{/if}}
+
+  {{/with}}
+  {{/if}}
+</div>

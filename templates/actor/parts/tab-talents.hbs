@@ -1,0 +1,66 @@
+<div class="talents-container">
+
+  {{!-- Filter Bar --}}
+  <div class="talent-filter-bar">
+    <div class="talent-filter-controls">
+      <label>Category:</label>
+      <select class="talent-category-filter" data-action="filter-talents">
+        <option value="">All Categories</option>
+        {{#each talentCategories}}
+        <option value="{{this}}" {{#if (eq this ../selectedTalentCategory)}}selected{{/if}}>{{this}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div class="talent-count">
+      <span class="talent-visible-count">{{visibleTalentCount}}</span> / <span class="talent-total-count">{{totalTalentCount}}</span> talents
+    </div>
+  </div>
+
+  {{!-- Section Header with Add Button --}}
+  <div class="section-header">
+    Character Talents
+    <button type="button" class="add-btn" data-action="add-talent" title="Add Talent"><i class="fas fa-plus"></i></button>
+  </div>
+
+  {{!-- Talents List (grouped by category) --}}
+  <div class="talents-list">
+    {{#if (gt characterTalents.length 0)}}
+      {{#each talentGroups}}
+      <div class="talent-group">
+        <div class="talent-group-header">
+          <span class="talent-category-badge">{{category}}</span>
+          <span class="talent-group-count">({{talents.length}})</span>
+        </div>
+        {{#each talents}}
+        <div class="talent-card" data-talent-id="{{id}}">
+          <div class="talent-header">
+            <span class="talent-category-badge">{{category}}</span>
+            <span class="talent-name">{{name}}</span>
+            <button type="button" class="delete-btn item-delete" data-action="delete-talent" data-talent-id="{{id}}" title="Remove Talent">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          {{#if prerequisites}}
+          <div class="talent-prerequisites"><strong>Prerequisites:</strong> {{prerequisites}}</div>
+          {{/if}}
+          {{#if description}}
+          <div class="talent-description">{{description}}</div>
+          {{/if}}
+          <div class="talent-effects-list">
+            {{#each effects}}
+            <div class="talent-effect {{activationType}}">
+              <span class="effect-level">Lv.{{level}}</span>
+              <span class="effect-keyword {{activationType}}">[{{keyword}}]</span>
+              <span class="effect-text">{{{text}}}</span>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      {{/each}}
+    {{else}}
+      <div class="empty-message">No talents selected. Click <i class="fas fa-plus"></i> to add talents.</div>
+    {{/if}}
+  </div>
+</div>

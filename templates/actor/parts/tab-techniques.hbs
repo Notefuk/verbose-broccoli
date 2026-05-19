@@ -1,0 +1,259 @@
+<div class="techniques-container">
+
+  {{!-- TP Summary Bar (Shared Pool) --}}
+  <div class="tp-summary-bar">
+    <div class="tp-item">
+      <label>Total Technique Points</label>
+      <span class="tp-value">{{tpTotal}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Spent on Signatures</label>
+      <span class="tp-value tp-spent">{{tpSpentSignatures}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Spent on Auras</label>
+      <span class="tp-value tp-spent">{{tpSpentAuras}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Spent on Unique</label>
+      <span class="tp-value tp-spent">{{tpSpentUnique}}</span>
+    </div>
+    <div class="tp-item tp-remaining">
+      <label>TP Remaining</label>
+      <span class="tp-value {{#if (lt tpRemaining 0)}}tp-over{{/if}}">{{tpRemaining}}</span>
+    </div>
+  </div>
+
+  {{!-- Section Header --}}
+  <div class="section-header">
+    Signature Techniques
+    <button type="button" class="add-btn" data-action="add-technique" title="Add Technique"><i class="fas fa-plus"></i></button>
+  </div>
+
+  {{!-- Techniques List --}}
+  <div class="techniques-list">
+    {{#each signatureTechniques}}
+    <div class="signature-technique-card {{#if isGained}}gained-ability{{/if}}" data-technique-id="{{id}}">
+      <div class="tech-header">
+        <span class="tech-name-display">{{name}}</span>
+        {{#if isGained}}<span class="gained-badge"><i class="fas fa-link"></i> Gained from: {{gainedFrom}}</span>{{/if}}
+        <span class="tech-type-badge">{{type}}</span>
+        <span class="tech-tp-badge">TP: {{tpCost}}/{{tpMax}}</span>
+        {{#unless isGained}}
+        <button type="button" class="delete-btn" data-action="delete-technique" data-technique-id="{{id}}">
+          <i class="fas fa-trash"></i>
+        </button>
+        {{/unless}}
+      </div>
+
+      <div class="tech-main-section">
+        {{!-- Left: Info Fields --}}
+        <div class="tech-info-left">
+          <div class="tech-row">
+            <label>Name</label>
+            <input type="text" class="tech-input" data-tech-id="{{id}}" data-field="name" value="{{name}}" />
+          </div>
+          <div class="tech-row">
+            <label>Type</label>
+            <select class="tech-input" data-tech-id="{{id}}" data-field="type">
+              {{selectOptions ../techniqueTypeOptions selected=type}}
+            </select>
+          </div>
+          <div class="tech-row">
+            <label>Foundation</label>
+            <select class="tech-input" data-tech-id="{{id}}" data-field="foundation">
+              {{selectOptions ../foundationOptions selected=foundation}}
+            </select>
+          </div>
+          <div class="tech-row">
+            <label>Profile</label>
+            <select class="tech-input" data-tech-id="{{id}}" data-field="profile">
+              <option value="">-- Select --</option>
+              {{#each availableProfiles}}
+              <option value="{{this}}" {{#if (eq this ../profile)}}selected{{/if}}>{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+          <div class="tech-row">
+            <label>Base Energy Charges</label>
+            <input type="number" class="tech-input" data-tech-id="{{id}}" data-field="baseEnergyCharges" value="{{baseEnergyCharges}}" min="0" />
+          </div>
+          <div class="tech-row">
+            <label>Extra Energy Charges</label>
+            <input type="number" class="tech-input" data-tech-id="{{id}}" data-field="extraEnergyCharges" value="{{extraEnergyCharges}}" min="0" />
+          </div>
+          <div class="tech-row check-field">
+            <label>
+              <input type="checkbox" class="tech-input" data-tech-id="{{id}}" data-field="isLimitBreak" {{#if isLimitBreak}}checked{{/if}} />
+              Limit Break
+            </label>
+          </div>
+        </div>
+
+        {{!-- Right: Cost Display --}}
+        <div class="tech-info-right">
+          <div class="tech-cost-row">
+            <label>TP Cost</label>
+            <span class="cost-value">{{tpCost}}</span>
+          </div>
+          <div class="tech-cost-row">
+            <label>TP Max</label>
+            <input type="number" class="tech-input cost-input" data-tech-id="{{id}}" data-field="tpMax" value="{{tpMax}}" min="0" />
+          </div>
+          <div class="tech-cost-row">
+            <label>Free TP</label>
+            <input type="number" class="tech-input cost-input" data-tech-id="{{id}}" data-field="freeTP" value="{{freeTP}}" min="0" />
+          </div>
+          <div class="tech-cost-row">
+            <label>Ki Cost (KP)</label>
+            <span class="cost-value">{{kpCost}}(T)</span>
+          </div>
+          <div class="tech-cost-row">
+            <label>KP Reduction</label>
+            <span class="cost-value">{{kpReduction}}</span>
+          </div>
+          <div class="tech-cost-row">
+            <label>Dynamic Ki</label>
+            <span class="cost-value">{{dynamicKi}}</span>
+          </div>
+          <div class="tech-cost-row">
+            <label>Final KP</label>
+            <span class="cost-value cost-highlight">{{finalKP}}(T)</span>
+          </div>
+        </div>
+      </div>
+
+      {{!-- Profile Info --}}
+      {{#if profileInfo}}
+      <div class="tech-profile-info">
+        <span class="profile-tag">{{profile}}</span>
+        <span class="profile-tag">{{profileInfo.damageCat}}</span>
+        <span class="profile-tag">{{profileInfo.range}}</span>
+        <div class="profile-effect">{{profileInfo.effect}}</div>
+      </div>
+      {{/if}}
+
+      {{!-- Combat Formulas Section --}}
+      <div class="tech-combat-section">
+        <div class="tech-style-toggle">
+          <button type="button" class="style-btn {{#unless isWeapon}}active{{/unless}}" data-style="unarmed">Unarmed</button>
+          <button type="button" class="style-btn {{#if isWeapon}}active{{/if}}" data-style="weapon">Weapon</button>
+        </div>
+        <div class="tech-formula-row">
+          <label>Strike</label>
+          <span class="formula-value">{{strikeFormula}}</span>
+          <span class="formula-ct">CT: {{strikeCT}}+</span>
+        </div>
+        <div class="tech-formula-row">
+          <label>Wound</label>
+          <span class="formula-value">{{woundFormula}}</span>
+          <span class="formula-ct">CT: {{woundCT}}+</span>
+          <span class="formula-dmg-cat">{{damageCat}}</span>
+        </div>
+        {{#if ctNotes.length}}
+        <div class="tech-ct-notes">
+          {{#each ctNotes}}
+          <div class="ct-note">{{this}}</div>
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+
+      {{!-- Description --}}
+      <div class="tech-field full-width">
+        <label>Description</label>
+        <textarea class="tech-input tech-description" data-tech-id="{{id}}" data-field="description" rows="2">{{description}}</textarea>
+      </div>
+
+      {{!-- Advantages Table --}}
+      <div class="tech-advdis-section">
+        <div class="advdis-header">
+          Advantages
+          <button type="button" class="add-btn add-adv-btn" data-action="add-advantage" data-technique-id="{{id}}"><i class="fas fa-plus"></i></button>
+        </div>
+        <table class="advdis-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Ranks</th>
+              <th>Notes</th>
+              <th>Req.</th>
+              <th>TP</th>
+              <th>Dyn.</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each advantages}}
+            <tr data-adv-index="{{@index}}">
+              <td>
+                <select class="adv-input" data-tech-id="{{../id}}" data-adv-index="{{@index}}" data-field="name">
+                  <option value="">-- Select --</option>
+                  {{#each ../../advantageOptions}}
+                  <option value="{{this}}" {{#if (eq this ../name)}}selected{{/if}}>{{this}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td><input type="number" class="adv-input" data-tech-id="{{../id}}" data-adv-index="{{@index}}" data-field="ranks" value="{{ranks}}" min="1" /></td>
+              <td><input type="text" class="adv-input" data-tech-id="{{../id}}" data-adv-index="{{@index}}" data-field="notes" value="{{notes}}" /></td>
+              <td class="adv-req">{{requirement}}</td>
+              <td class="adv-tp">{{tpCost}}</td>
+              <td><input type="number" class="adv-input adv-dtp" data-tech-id="{{../id}}" data-adv-index="{{@index}}" data-field="dynamicTP" value="{{dynamicTP}}" /></td>
+              <td>
+                <button type="button" class="delete-btn" data-action="remove-advantage" data-technique-id="{{../id}}" data-adv-index="{{@index}}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+
+        <div class="advdis-header">
+          Disadvantages
+          <button type="button" class="add-btn add-disadv-btn" data-action="add-disadvantage" data-technique-id="{{id}}"><i class="fas fa-plus"></i></button>
+        </div>
+        <table class="advdis-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Ranks</th>
+              <th>Notes</th>
+              <th>Req.</th>
+              <th>TP</th>
+              <th>Dyn.</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each disadvantages}}
+            <tr data-disadv-index="{{@index}}">
+              <td>
+                <select class="disadv-input" data-tech-id="{{../id}}" data-disadv-index="{{@index}}" data-field="name">
+                  <option value="">-- Select --</option>
+                  {{#each ../../disadvantageOptions}}
+                  <option value="{{this}}" {{#if (eq this ../name)}}selected{{/if}}>{{this}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td><input type="number" class="disadv-input" data-tech-id="{{../id}}" data-disadv-index="{{@index}}" data-field="ranks" value="{{ranks}}" min="1" /></td>
+              <td><input type="text" class="disadv-input" data-tech-id="{{../id}}" data-disadv-index="{{@index}}" data-field="notes" value="{{notes}}" /></td>
+              <td class="disadv-req">{{requirement}}</td>
+              <td class="disadv-tp">{{tpCost}}</td>
+              <td><input type="number" class="disadv-input disadv-dtp" data-tech-id="{{../id}}" data-disadv-index="{{@index}}" data-field="dynamicTP" value="{{dynamicTP}}" /></td>
+              <td>
+                <button type="button" class="delete-btn" data-action="remove-disadvantage" data-technique-id="{{../id}}" data-disadv-index="{{@index}}">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {{else}}
+    <div class="empty-message">No signature techniques. Click <i class="fas fa-plus"></i> to add one.</div>
+    {{/each}}
+  </div>
+</div>

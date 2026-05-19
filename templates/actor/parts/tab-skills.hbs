@@ -1,0 +1,29 @@
+<div class="skills-container">
+  <div class="section-header">Skills</div>
+  <table class="skills-table">
+    <thead>
+      <tr>
+        <th>Skill</th>
+        <th>Attr</th>
+        <th>Ranks</th>
+        <th>Bonus</th>
+        <th>Roll</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each skills}}
+      <tr data-skill="{{key}}">
+        <td class="skill-name">{{name}}</td>
+        <td class="skill-attr"><span class="attr-badge">{{abbr}}</span></td>
+        <td class="skill-ranks">{{rank}}</td>
+        <td class="skill-bonus">{{bonusStr}}</td>
+        <td class="skill-roll">
+          <button type="button" class="roll-btn" data-action="roll-skill" data-skill="{{key}}" title="Roll {{name}}">
+            <i class="fas fa-dice-d10"></i>
+          </button>
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,590 @@
+<div class="fusion-container">
+
+  {{!-- ==================== FUSION SETUP ==================== --}}
+  <div class="fusion-setup-panel">
+    <div class="section-header fusion-header">
+      <i class="fas fa-atom"></i> Fusion Setup
+    </div>
+    <div class="fusion-setup-body">
+      <div class="fusion-setup-row">
+        <label class="fusion-toggle">
+          <input type="checkbox" name="system.fusion.isFusion" {{#if system.fusion.isFusion}}checked{{/if}} />
+          <span>This is a Fusion Character</span>
+        </label>
+      </div>
+
+      {{#if system.fusion.isFusion}}
+      <div class="fusion-setup-grid">
+        <div class="fusion-field">
+          <label>Fusion Type</label>
+          <select name="system.fusion.type" class="fusion-type-select">
+            <option value="" {{#unless system.fusion.type}}selected{{/unless}}>-- Select --</option>
+            <option value="regular" {{#if (eq system.fusion.type "regular")}}selected{{/if}}>Regular Fusion</option>
+            <option value="one-sided-absorption" {{#if (eq system.fusion.type "one-sided-absorption")}}selected{{/if}}>One-Sided: Absorption</option>
+            <option value="one-sided-possession" {{#if (eq system.fusion.type "one-sided-possession")}}selected{{/if}}>One-Sided: Possession</option>
+            <option value="fission" {{#if (eq system.fusion.type "fission")}}selected{{/if}}>Fission</option>
+          </select>
+        </div>
+
+        {{#if fusionIsRegular}}
+        <div class="fusion-field">
+          <label>Fusion Method</label>
+          <select name="system.fusion.method" class="fusion-method-select">
+            <option value="" {{#unless system.fusion.method}}selected{{/unless}}>-- Select --</option>
+            {{#each fusionMethodOptions}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}} ({{fusionType}}{{#if roundLimit}}, {{roundLimit}} rounds{{/if}})</option>
+            {{/each}}
+          </select>
+        </div>
+        {{/if}}
+      </div>
+
+      {{!-- Linked Characters (Regular/Fission: full list; One-Sided: just the add button) --}}
+      <div class="fusion-linked-section">
+        <div class="fusion-linked-header">
+          {{#if fusionIsRegular}}
+          <span><i class="fas fa-users"></i> Fused Characters</span>
+          {{else if fusionIsOneSided}}
+          <span><i class="fas fa-user-shield"></i> Suppressed Characters</span>
+          {{else if fusionIsFission}}
+          <span><i class="fas fa-divide"></i> Split Character Link</span>
+          {{/if}}
+          <button type="button" data-action="add-fused-character" class="action-btn"><i class="fas fa-plus"></i> Link Actor</button>
+        </div>
+        {{!-- For one-sided: suppressed actors are shown in the one-sided panel below --}}
+        {{#unless fusionIsOneSided}}
+        <div class="fusion-linked-list">
+          {{#each fusionLinkedActors}}
+          <div class="fusion-linked-card" data-actor-id="{{id}}">
+            <img src="{{img}}" class="fusion-linked-portrait" />
+            <div class="fusion-linked-info">
+              <span class="fusion-linked-name">{{name}}</span>
+              <span class="fusion-linked-meta">Lv{{level}} {{race}}</span>
+              <span class="fusion-linked-stats">FO:{{fo}} AG:{{ag}} TE:{{te}} MA:{{ma}}</span>
+            </div>
+            <button type="button" class="action-btn danger fusion-unlink-btn" data-action="remove-fused-character" data-actor-id="{{id}}"><i class="fas fa-unlink"></i></button>
+          </div>
+          {{else}}
+          <div class="empty-message">No linked characters. Click "Link Actor" to add component characters.</div>
+          {{/each}}
+        </div>
+        {{/unless}}
+      </div>
+
+      {{!-- Recalculate button --}}
+      {{#if fusionIsRegular}}
+      <div class="fusion-actions-row">
+        <button type="button" data-action="recalculate-fusion" class="action-btn fusion-recalc-btn"><i class="fas fa-calculator"></i> Recalculate Fusion Stats</button>
+      </div>
+      {{/if}}
+      {{/if}}
+    </div>
+  </div>
+
+  {{#if system.fusion.isFusion}}
+
+  {{!-- ==================== STATS PREVIEW (Regular Fusion) ==================== --}}
+  {{#if fusionIsRegular}}
+  {{#if fusionLinkedActors.length}}
+  <div class="fusion-stats-panel">
+    <div class="section-header">
+      <i class="fas fa-chart-bar"></i> Fusion Stats Comparison
+    </div>
+    <div class="fusion-stats-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Attribute</th>
+            {{#each fusionLinkedActors}}
+            <th>{{name}}</th>
+            {{/each}}
+            <th class="fusion-result-col">Fusion</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each fusionAttrComparison}}
+          <tr>
+            <td class="attr-label">{{label}}</td>
+            {{#each values}}
+            <td class="{{#if isHighest}}attr-highest{{/if}}">{{score}}</td>
+            {{/each}}
+            <td class="fusion-result-col">{{fusionValue}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div class="fusion-derived-stats">
+        <div class="fusion-stat-chip"><strong>Power Level:</strong> {{fusionPowerLevel}}</div>
+        <div class="fusion-stat-chip"><strong>Tier:</strong> {{fusionTier}}</div>
+        <div class="fusion-stat-chip"><strong>LP:</strong> {{fusionLP}}</div>
+        <div class="fusion-stat-chip"><strong>KP:</strong> {{fusionKP}}</div>
+        <div class="fusion-stat-chip"><strong>Capacity:</strong> {{fusionCapacity}}</div>
+        <div class="fusion-stat-chip"><strong>Bonus TP:</strong> {{fusionBonusTP}}</div>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== MANUAL CHOICES ==================== --}}
+  <div class="fusion-choices-panel">
+    <div class="section-header">
+      <i class="fas fa-hand-pointer"></i> Fusion Choices
+    </div>
+    <div class="fusion-choices-body">
+
+      {{!-- Racial Traits Selection --}}
+      <div class="fusion-choice-section">
+        {{!-- +1(bT) Boost Attributes --}}
+        <div class="fusion-choice-header">+1(bT) Attribute Boost <span class="fusion-choice-limit">(Choose 3: {{fusionBoostAttrCount}}/3)</span></div>
+        <div class="fusion-trait-checklist" style="margin-bottom:8px;">
+          {{#each fusionBoostAttrOptions}}
+          <label class="fusion-trait-check {{#if selected}}checked{{/if}}">
+            <input type="checkbox" class="fusion-boost-attr-toggle" data-attr-key="{{key}}" {{#if selected}}checked{{/if}} />
+            <span>{{label}}</span>
+          </label>
+          {{/each}}
+        </div>
+
+        {{!-- +2 Bonus Talents from Character Combination --}}
+        <div class="fusion-choice-header">+2 Bonus Talents <span class="fusion-choice-limit">(Choose 2: {{fusionBonusTalentCount}}/2)</span></div>
+        <div class="fusion-trait-checklist" style="margin-bottom:8px; max-height:160px; overflow-y:auto;">
+          {{#each fusionBonusTalentOptions}}
+          <label class="fusion-trait-check {{#if selected}}checked{{/if}}">
+            <input type="checkbox" class="fusion-bonus-talent-toggle" data-talent-id="{{id}}" {{#if selected}}checked{{/if}} />
+            <span class="trait-cat-badge">{{category}}</span>
+            <span>{{name}}</span>
+          </label>
+          {{else}}
+          <div class="empty-message">No talents available.</div>
+          {{/each}}
+        </div>
+
+        {{!-- Derived bonuses display --}}
+        {{#if fusionRLM}}
+        <div class="fusion-derived-bonuses" style="font-size:0.85rem; padding:4px 0; display:flex; gap:8px; flex-wrap:wrap;">
+          <span title="Highest RLM among fused characters (+3 if same race)"><strong>RLM:</strong> {{fusionRLM}}</span>
+          {{#if fusionAllProfSaves.length}}<span><strong>Prof. Saves:</strong> {{#each fusionAllProfSaves}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</span>{{/if}}
+          {{#if fusionSameRaceBonus}}<span style="color:#27ae60;"><strong>Same Race:</strong> +{{fusionSameRaceBonus}} AG/FO/TE/MA</span>{{/if}}
+          {{#if fusionBreakthrough}}<span style="color:#e67e22;"><strong>Breakthrough:</strong> +1 Tier</span>{{/if}}
+          {{#if fusionMissingTraitBonus}}<span><strong>Missing Traits:</strong> +{{fusionMissingTraitBonus}} AG/FO/TE/MA mods</span>{{/if}}
+          {{#if fusionMatchRaceBonus}}<span><strong>Matching Race:</strong> +{{fusionMatchRaceBonus}} AG/FO/TE/MA mods</span>{{/if}}
+          {{#if fusionPLOverflow}}<span style="color:#e74c3c;"><strong>PL Overflow:</strong> +{{fusionPLOverflow}} all attr mods</span>{{/if}}
+        </div>
+        {{/if}}
+
+        <div class="fusion-choice-header">Racial Traits <span class="fusion-choice-limit">{{#if fusionIsTemporary}}(All — Temporary Fusion){{else}}(Max 7 — Lasting Fusion){{/if}}</span></div>
+        <div class="fusion-trait-checklist">
+          {{#each fusionAvailableTraits}}
+          <label class="fusion-trait-check {{#if selected}}checked{{/if}} {{category}}">
+            <input type="checkbox" class="fusion-racial-trait-toggle" data-trait-id="{{id}}" {{#if selected}}checked{{/if}} />
+            <span class="trait-cat-badge">{{categoryLabel}}</span>
+            <span>{{name}}</span>
+            <small>({{race}})</small>
+          </label>
+          {{else}}
+          <div class="empty-message">Link fused characters to see available racial traits.</div>
+          {{/each}}
+        </div>
+        <div class="fusion-trait-count">Selected: {{fusionSelectedTraitCount}} / 7</div>
+      </div>
+
+      {{!-- Base Size Category --}}
+      <div class="fusion-choice-section">
+        <div class="fusion-choice-header">Base Size Category</div>
+        <select name="system.fusion.chosenSize" class="fusion-size-select">
+          {{#each fusionSizeOptions}}
+          <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      {{!-- Plump/Frail Variant (Metamorese only) --}}
+      {{#if fusionIsMetamorese}}
+      <div class="fusion-choice-section">
+        <div class="fusion-choice-header">Fusion Dance Result</div>
+        <select name="system.fusion.fusionVariant" class="fusion-size-select">
+          <option value="" {{#unless system.fusion.fusionVariant}}selected{{/unless}}>Normal (both succeed)</option>
+          <option value="plump" {{#if (eq system.fusion.fusionVariant "plump")}}selected{{/if}}>Plump (AG/FO/MA mods ÷2)</option>
+          <option value="frail" {{#if (eq system.fusion.fusionVariant "frail")}}selected{{/if}}>Frail (AG/FO/TE/MA mods ÷4)</option>
+        </select>
+        {{#if system.fusion.fusionVariant}}
+        <div class="fusion-defusion-warning" style="margin-top:4px;">
+          <i class="fas fa-exclamation-triangle"></i> Cannot use Auras, Signature Techniques, Unique Abilities, or Transformations.
+        </div>
+        {{/if}}
+      </div>
+      {{/if}}
+
+      {{!-- Fusion Modifiers --}}
+      <div class="fusion-choice-section">
+        <div class="fusion-choice-header">Fusion Modifiers <span class="fusion-choice-limit">({{fusionModifierLimit}})</span></div>
+        <div class="fusion-modifier-list">
+          {{#each fusionModifierOptions}}
+          <div class="fusion-modifier-card {{#if selected}}selected{{/if}}">
+            <label class="fusion-modifier-toggle">
+              <input type="checkbox" class="fusion-modifier-check" data-modifier-id="{{id}}" {{#if selected}}checked{{/if}} />
+              <strong>{{name}}</strong>
+            </label>
+            <div class="fusion-modifier-prereq"><em>Prereq:</em> {{prerequisite}}</div>
+            <div class="fusion-modifier-effects">
+              {{#each effects}}
+              <div class="fusion-modifier-effect"><span class="god-ki-badge passive">{{activationType}}</span> {{text}}</div>
+              {{/each}}
+            </div>
+          </div>
+          {{else}}
+          <div class="empty-message">Select a fusion method first.</div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- ==================== FUSED TECHNIQUE ==================== --}}
+  <div class="fusion-technique-panel">
+    <div class="section-header">
+      <i class="fas fa-magic"></i> Fused Technique
+    </div>
+    <div class="fusion-technique-body">
+      <label class="fusion-toggle">
+        <input type="checkbox" name="system.fusion.hasFusedTechnique" {{#if system.fusion.hasFusedTechnique}}checked{{/if}} />
+        <span>Create Fused Technique (uncheck for +20 extra TP instead)</span>
+      </label>
+      {{#if system.fusion.hasFusedTechnique}}
+      <div class="fusion-technique-builder">
+        <div class="god-builder-row">
+          <label>Name</label>
+          <input type="text" name="system.fusion.fusedTechnique.name" value="{{system.fusion.fusedTechnique.name}}" placeholder="Fused Technique name..." />
+        </div>
+        <div class="god-builder-row">
+          <label>Base Technique</label>
+          <input type="text" name="system.fusion.fusedTechnique.baseTechSource" value="{{system.fusion.fusedTechnique.baseTechSource}}" placeholder="Name of the base signature technique..." />
+        </div>
+        <div class="god-builder-row">
+          <label>Second Technique</label>
+          <input type="text" name="system.fusion.fusedTechnique.secondTechSource" value="{{system.fusion.fusedTechnique.secondTechSource}}" placeholder="Name of the second signature technique..." />
+        </div>
+        <div class="god-builder-row">
+          <label>Super Profile</label>
+          <input type="text" name="system.fusion.fusedTechnique.superProfile" value="{{system.fusion.fusedTechnique.superProfile}}" placeholder="Complete Annihilation / Super [Profile] / Multi-Profile..." />
+        </div>
+        <div class="god-builder-row">
+          <label>KP Cost</label>
+          <input type="number" name="system.fusion.fusedTechnique.kpCost" value="{{system.fusion.fusedTechnique.kpCost}}" min="0" />
+        </div>
+        <div class="god-builder-row">
+          <label>Advantages</label>
+          <textarea name="system.fusion.fusedTechnique.advantages" rows="2" placeholder="List advantages applied from both techniques...">{{system.fusion.fusedTechnique.advantages}}</textarea>
+        </div>
+        <div class="god-builder-row">
+          <label>Effect</label>
+          <textarea name="system.fusion.fusedTechnique.effect" rows="3" placeholder="Full technique effect description...">{{system.fusion.fusedTechnique.effect}}</textarea>
+        </div>
+        <div class="fusion-technique-note">
+          <i class="fas fa-info-circle"></i> KP Cost is auto-reduced by 4(T). Disadvantages removed from base. May ignore TP Limit for advantages.
+        </div>
+      </div>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== ROUND TRACKER (Temporary Fusions) ==================== --}}
+  {{#if fusionIsTemporary}}
+  <div class="fusion-round-panel">
+    <div class="section-header">
+      <i class="fas fa-hourglass-half"></i> Fusion Round Limit
+    </div>
+    <div class="fusion-round-body">
+      <div class="fusion-round-display">
+        <span class="fusion-round-current">{{system.fusion.roundLimit}}</span>
+        <span class="fusion-round-sep">/</span>
+        <span class="fusion-round-max">{{system.fusion.maxRoundLimit}}</span>
+        <span class="fusion-round-label">Rounds Remaining</span>
+      </div>
+      <div class="fusion-round-controls">
+        <button type="button" data-action="fusion-round-decrement" class="action-btn"><i class="fas fa-minus"></i> Decrement</button>
+        <button type="button" data-action="fusion-round-reset" class="action-btn"><i class="fas fa-redo"></i> Reset</button>
+      </div>
+      {{#if (eq system.fusion.roundLimit 0)}}
+      <div class="fusion-defusion-warning">
+        <i class="fas fa-exclamation-triangle"></i> Fusion time expired! The Fusion must split into its Fused Characters.
+      </div>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== METHOD TRAITS ==================== --}}
+  {{#if fusionMethodData}}
+  <div class="fusion-traits-panel">
+    <div class="section-header">
+      <i class="fas fa-scroll"></i> Method Trait: {{fusionMethodData.traitName}}
+    </div>
+    <div class="fusion-traits-body">
+      {{#each fusionMethodData.traits}}
+      <div class="fusion-trait-effect">
+        <span class="god-ki-badge passive">{{activationType}}</span>
+        {{text}}
+      </div>
+      {{/each}}
+      {{#if fusionMethodData.clothing}}
+      <div class="fusion-clothing-card">
+        <strong>{{fusionMethodData.clothing.name}}</strong> ({{fusionMethodData.clothing.category}} — {{fusionMethodData.clothing.grade}})
+        {{#each fusionMethodData.clothing.qualities}}
+        <div class="fusion-clothing-quality">{{this}}</div>
+        {{/each}}
+      </div>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== MODIFIER TRAITS ==================== --}}
+  {{#if fusionSelectedModifiers.length}}
+  <div class="fusion-traits-panel">
+    <div class="section-header">
+      <i class="fas fa-puzzle-piece"></i> Selected Fusion Modifiers
+    </div>
+    <div class="fusion-traits-body">
+      {{#each fusionSelectedModifiers}}
+      <div class="fusion-modifier-display">
+        <div class="fusion-modifier-display-name">{{name}}</div>
+        {{#each effects}}
+        <div class="fusion-trait-effect">
+          <span class="god-ki-badge passive">{{activationType}}</span>
+          {{text}}
+        </div>
+        {{/each}}
+      </div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== ONE-SIDED FUSION (Absorption/Possession) ==================== --}}
+  {{#if fusionIsOneSided}}
+  <div class="fusion-onesided-panel">
+    <div class="section-header">
+      <i class="fas fa-user-slash"></i> One-Sided Fusion: {{#if (eq system.fusion.type "one-sided-absorption")}}Absorption{{else}}Possession{{/if}}
+      {{#if (eq system.fusion.type "one-sided-absorption")}}
+      <span style="margin-left:8px; font-size:0.85em; {{#if fusionAbsorptionOverLimit}}color:#e67e22;{{/if}}">
+        ({{system.fusion.suppressedCharacterIds.length}}/{{fusionAbsorptionLimit}}{{#if fusionAbsorptionLimitSource}} — {{fusionAbsorptionLimitSource}}{{/if}})
+      </span>
+      {{/if}}
+    </div>
+    <div class="fusion-onesided-body">
+
+      {{!-- Possession: Host Info Panel --}}
+      {{#if fusionPossessionHost}}
+      <div class="fusion-possession-host" style="background:#1a1a2e; border:1px solid #7b2ff7; border-radius:6px; padding:8px; margin-bottom:8px;">
+        <div style="font-weight:bold; margin-bottom:4px;"><i class="fas fa-user-circle"></i> Host: {{fusionPossessionHost.name}}</div>
+        <div style="display:flex; gap:12px; font-size:0.85rem;">
+          <span>Race: <b>{{fusionPossessionHost.race}}</b></span>
+          <span>Size: <b>{{fusionPossessionHost.size}}</b></span>
+          <span>Host LP: <b>{{fusionPossessionHost.hostLP}}</b> / {{fusionPossessionHost.hostMaxLP}}</span>
+        </div>
+        {{#if fusionPossessionAttr}}
+        <table style="width:100%; margin-top:6px; font-size:0.8rem;">
+          <thead><tr><th>Attr</th><th>Host Score</th><th>+1/4 Own</th><th>Total</th></tr></thead>
+          <tbody>
+          {{#each fusionPossessionAttr}}
+          <tr><td>{{label}}</td><td style="text-align:center">{{hostScore}}</td><td style="text-align:center">+{{ownBonus}}</td><td style="text-align:center; font-weight:bold;">{{total}}</td></tr>
+          {{/each}}
+          </tbody>
+        </table>
+        {{/if}}
+        {{#if fusionIsParasitePossession}}
+        <div style="margin-top:6px; font-size:0.85rem;">
+          <label style="font-weight:bold;"><i class="fas fa-dna"></i> Parasite: Host Racial Trait</label>
+          <small style="display:block; color:#aaa; margin-bottom:4px;">Liquid Form suppressed. Choose 1 host trait:</small>
+          <select name="system.fusion.parasiteHostTraitId" style="width:100%;">
+            <option value="">-- None --</option>
+            {{#each fusionParasiteHostTraitOptions}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}} ({{category}})</option>
+            {{/each}}
+          </select>
+        </div>
+        {{/if}}
+        {{#if possessionOwnPrimaryTraits.length}}
+        <div style="margin-top:6px; font-size:0.85rem;">
+          <label style="font-weight:bold;"><i class="fas fa-exchange-alt"></i> Primary Trait Exchange</label>
+          <small style="display:block; color:#aaa; margin-bottom:4px;">Exchange one of your Primary traits for one of the Host's:</small>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <div style="flex:1;">
+              <label style="font-size:0.75rem;">Give (yours):</label>
+              <select class="possession-trait-give" style="width:100%; font-size:0.8rem;">
+                <option value="">-- None --</option>
+                {{#each possessionOwnPrimaryTraits}}
+                <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+                {{/each}}
+              </select>
+            </div>
+            <div style="flex:1;">
+              <label style="font-size:0.75rem;">Take (host's):</label>
+              <select class="possession-trait-take" style="width:100%; font-size:0.8rem;">
+                <option value="">-- None --</option>
+                {{#each possessionHostPrimaryTraits}}
+                <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+        </div>
+        {{/if}}
+      </div>
+      {{/if}}
+
+      {{!-- Absorption: Majin Apparel + Mutation MP --}}
+      {{#if fusionIsMajinAbsorption}}
+      <div style="margin-top:6px; font-size:0.85rem; padding:4px; background:rgba(255,255,255,0.03); border-radius:4px;">
+        <label style="font-weight:bold;"><i class="fas fa-tshirt"></i> Absorbed Apparel</label>
+        {{#if fusionAbsorbedApparel}}
+        <div style="display:flex; align-items:center; gap:6px; margin-top:3px;">
+          <span>{{fusionAbsorbedApparel.itemName}} <small style="color:#aaa;">(from {{fusionAbsorbedApparel.sourceName}})</small></span>
+          <button type="button" data-action="destroy-absorbed-apparel" class="action-btn danger" style="font-size:0.7rem; padding:2px 6px;" title="Destroy Absorbed Apparel"><i class="fas fa-trash"></i></button>
+        </div>
+        {{else}}
+        <div style="color:#888; margin-top:3px;">None</div>
+        {{/if}}
+      </div>
+      {{/if}}
+      {{#if fusionMutationOptions.length}}
+      <div style="margin-top:6px; font-size:0.85rem;">
+        <label style="font-weight:bold;"><i class="fas fa-dna"></i> Shared Mutation Trait</label>
+        <small style="display:block; color:#aaa; margin-bottom:3px;">Gain a Mutation Trait from an absorbed character:</small>
+        <select class="mutation-source-select" style="width:100%; font-size:0.8rem;">
+          <option value="">-- None --</option>
+          {{#each fusionMutationOptions}}
+          <option value="{{actorId}}" {{#if selected}}selected{{/if}}>{{actorName}} — {{traitName}}</option>
+          {{/each}}
+        </select>
+        {{#if system.fusion._gainedMutationTraitName}}
+        <div style="margin-top:3px; color:#2ecc71; font-size:0.8rem;">
+          <i class="fas fa-check"></i> Gained: <b>{{system.fusion._gainedMutationTraitName}}</b>
+          <small>(from {{system.fusion._gainedMutationSourceName}})</small>
+        </div>
+        {{/if}}
+      </div>
+      {{/if}}
+
+      {{!-- Suppressed Actor Cards --}}
+      {{#each fusionSuppressedActors}}
+      <div class="fusion-suppressed-card" data-actor-id="{{id}}">
+        <img src="{{img}}" class="fusion-linked-portrait" />
+        <div class="fusion-linked-info">
+          <span class="fusion-linked-name">{{name}}</span>
+          <span class="fusion-linked-meta">Lv{{level}} {{race}}</span>
+          <div class="fusion-suppressed-stats" style="display:flex; gap:6px; flex-wrap:wrap; font-size:0.8rem;">
+            {{#each perAttr}}
+            <span>{{label}}: <b>+{{bonus}}</b><small>({{score}})</small></span>
+            {{/each}}
+          </div>
+        </div>
+        {{!-- Absorption: available abilities from suppressed character --}}
+        {{#if abilities.uniqueAbilities.length}}
+        <div style="font-size:0.75rem; margin-top:4px; padding:4px; background:rgba(255,255,255,0.05); border-radius:4px;">
+          {{#if abilities.uniqueAbilities.length}}<div><i class="fas fa-star"></i> <b>UA:</b> {{#each abilities.uniqueAbilities}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</div>{{/if}}
+          {{#if abilities.auras.length}}<div><i class="fas fa-sun"></i> <b>Auras:</b> {{#each abilities.auras}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</div>{{/if}}
+          {{#if abilities.techniques.length}}<div><i class="fas fa-bolt"></i> <b>Tech:</b> {{#each abilities.techniques}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</div>{{/if}}
+          {{#if abilities.transformations.length}}<div><i class="fas fa-dragon"></i> <b>Transf:</b> {{#each abilities.transformations}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</div>{{/if}}
+        </div>
+        {{/if}}
+        {{#if abilities.secondaryTraits.length}}
+        <div style="font-size:0.75rem; margin-top:4px; padding:4px; background:rgba(255,255,255,0.05); border-radius:4px;">
+          <i class="fas fa-dna"></i> <b>Racial Trait (1):</b>
+          <select class="absorption-trait-select" data-actor-id="{{id}}" style="font-size:0.75rem; width:auto;">
+            <option value="">-- None --</option>
+            {{#each abilities.secondaryTraits}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}} ({{race}})</option>
+            {{/each}}
+          </select>
+        </div>
+        {{/if}}
+        <div class="fusion-suppressed-controls">
+          <label class="fusion-toggle">
+            <input type="checkbox" class="fusion-deeply-suppressed" data-actor-id="{{id}}" {{#if isDeeply}}checked{{/if}} />
+            <span>Deeply Suppressed</span>
+          </label>
+          <div class="fusion-struggling" style="display:flex; align-items:center; gap:6px;">
+            <label>Struggling:</label>
+            <input type="number" class="fusion-struggling-input" data-actor-id="{{id}}" value="{{strugglingStacks}}" min="0" style="width:50px;" />
+            {{#if cogSaveBonus}}<span style="color:#2ecc71; font-size:0.8rem;">Cog Save +{{cogSaveBonus}}</span>{{/if}}
+          </div>
+          <button type="button" data-action="escape-suppressed" data-actor-id="{{id}}" class="action-btn" title="Suppressed wins Cognitive Clash: freed, Dominant gains Fatigued 2"><i class="fas fa-running"></i> Escape</button>
+          <button type="button" data-action="eject-suppressed" data-actor-id="{{id}}" class="action-btn danger"><i class="fas fa-sign-out-alt"></i> Eject</button>
+        </div>
+      </div>
+      {{else}}
+      <div class="empty-message">No suppressed characters.</div>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- ==================== FISSION ==================== --}}
+  {{#if fusionIsFission}}
+  <div class="fusion-fission-panel">
+    <div class="section-header">
+      <i class="fas fa-divide"></i> Fission
+    </div>
+    <div class="fusion-fission-body">
+      <div class="fusion-setup-grid">
+        <div class="fusion-field">
+          <label>Split Type</label>
+          <select name="system.fusion.splitType">
+            <option value="" {{#unless system.fusion.splitType}}selected{{/unless}}>-- Select --</option>
+            <option value="paragon" {{#if (eq system.fusion.splitType "paragon")}}selected{{/if}}>Paragon (Pure Good)</option>
+            <option value="renegade" {{#if (eq system.fusion.splitType "renegade")}}selected{{/if}}>Renegade (Pure Evil)</option>
+          </select>
+        </div>
+        <div class="fusion-field">
+          <label>
+            <input type="checkbox" name="system.fusion.hasLifeLink" {{#if system.fusion.hasLifeLink}}checked{{/if}} />
+            Life-Link (if one dies, the other dies)
+          </label>
+        </div>
+      </div>
+
+      {{!-- Origin character reference --}}
+      {{#if fusionOriginActor}}
+      <div class="fusion-linked-card" data-actor-id="{{fusionOriginActor.id}}">
+        <img src="{{fusionOriginActor.img}}" class="fusion-linked-portrait" />
+        <div class="fusion-linked-info">
+          <span class="fusion-linked-name">Origin: {{fusionOriginActor.name}}</span>
+          <span class="fusion-linked-meta">Lv{{fusionOriginActor.level}} {{fusionOriginActor.race}}</span>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- Linked split character --}}
+      {{#if fusionLinkedSplit}}
+      <div class="fusion-linked-card" data-actor-id="{{fusionLinkedSplit.id}}">
+        <img src="{{fusionLinkedSplit.img}}" class="fusion-linked-portrait" />
+        <div class="fusion-linked-info">
+          <span class="fusion-linked-name">Other Split: {{fusionLinkedSplit.name}}</span>
+          <span class="fusion-linked-meta">{{fusionLinkedSplit.splitType}}</span>
+        </div>
+      </div>
+      {{/if}}
+
+      {{!-- Fission trait effects --}}
+      {{#if fusionFissionTrait}}
+      <div class="fusion-traits-panel" style="margin-top: 10px;">
+        <div class="fusion-choice-header">{{fusionFissionTrait.name}} Trait</div>
+        <div class="fusion-fission-desc">{{fusionFissionTrait.description}}</div>
+        {{#each fusionFissionTrait.effects}}
+        <div class="fusion-trait-effect">
+          <span class="god-ki-badge passive">{{activationType}}</span>
+          {{text}}
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{/if}} {{!-- end isFusion --}}
+
+</div>

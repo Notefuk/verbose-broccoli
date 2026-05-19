@@ -1,0 +1,167 @@
+<div class="unique-container">
+
+  {{!-- TP Summary Bar (Shared Pool) --}}
+  <div class="tp-summary-bar">
+    <div class="tp-item">
+      <label>Total TP</label>
+      <span class="tp-value">{{tpTotal}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Signatures</label>
+      <span class="tp-value tp-spent">{{tpSpentSignatures}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Auras</label>
+      <span class="tp-value tp-spent">{{tpSpentAuras}}</span>
+    </div>
+    <div class="tp-item">
+      <label>Unique</label>
+      <span class="tp-value tp-spent">{{tpSpentUnique}}</span>
+    </div>
+    <div class="tp-item tp-remaining-item">
+      <label>Remaining</label>
+      <span class="tp-value {{#if (lt tpRemaining 0)}}tp-over{{/if}}">{{tpRemaining}}</span>
+    </div>
+  </div>
+
+  {{!-- Section Header --}}
+  <div class="section-header">
+    Unique Abilities
+    <button type="button" class="add-btn" data-action="add-unique" title="Add Unique Ability"><i class="fas fa-plus"></i></button>
+  </div>
+
+  {{!-- Unique Abilities List --}}
+  <div class="unique-abilities-list">
+    {{#each characterUniques}}
+    <div class="unique-ability-card {{#if isGained}}gained-ability{{/if}}" data-unique-index="{{@index}}">
+      <div class="unique-header-bar">
+        <span class="unique-name-display">{{data.name}}</span>
+        {{#if isGained}}<span class="gained-badge"><i class="fas fa-link"></i> Gained from: {{gainedFrom}}</span>{{/if}}
+        <span class="unique-type-badge">{{data.abilityType}}</span>
+        <span class="unique-tp-badge">TP: {{tpCost}}</span>
+        {{#unless isGained}}
+        <label class="unique-free-label">
+          <input type="checkbox" class="unique-free-check" data-unique-index="{{@index}}" {{#if free}}checked{{/if}} /> Free
+        </label>
+        <button type="button" class="delete-btn" data-action="delete-unique" data-unique-index="{{@index}}">
+          <i class="fas fa-trash"></i>
+        </button>
+        {{/unless}}
+      </div>
+
+      <div class="unique-main-section">
+        <div class="unique-info-grid">
+          <div class="unique-field">
+            <label>Ability</label>
+            <span class="unique-auto-field">{{data.name}}</span>
+          </div>
+          <div class="unique-field">
+            <label>Type</label>
+            <span class="unique-auto-field">{{data.abilityType}}</span>
+          </div>
+          <div class="unique-field">
+            <label>Prerequisites</label>
+            <span class="unique-auto-field">{{data.prerequisites}}</span>
+          </div>
+          <div class="unique-field">
+            <label>Maneuver</label>
+            <span class="unique-auto-field">{{data.maneuverType}}</span>
+          </div>
+          <div class="unique-field">
+            <label>Action Cost</label>
+            <span class="unique-auto-field">{{data.actionCost}}</span>
+          </div>
+          <div class="unique-field">
+            <label>KP Cost</label>
+            <span class="unique-auto-field">{{data.kpCost}}</span>
+          </div>
+          <div class="unique-field">
+            <label>Base TP</label>
+            <span class="unique-auto-field">{{data.tpCost}}</span>
+          </div>
+        </div>
+
+        {{#if data.passiveBonus}}
+        <div class="unique-passive-section">
+          <label>Passive Bonus</label>
+          <span class="unique-passive-text">{{{data.passiveBonus}}}</span>
+        </div>
+        {{/if}}
+
+        <div class="unique-effect-section">
+          <label>Effect</label>
+          <span class="unique-effect-text">{{{data.effect}}}</span>
+        </div>
+      </div>
+
+      {{!-- Advancements --}}
+      {{#if data.advancements.length}}
+      <div class="unique-advres-section">
+        <div class="advdis-header">
+          Advancements
+          <button type="button" class="add-btn" data-action="add-unique-advancement" data-unique-index="{{@index}}"><i class="fas fa-plus"></i></button>
+        </div>
+        <table class="advdis-table">
+          <thead><tr><th>Name</th><th>Free?</th><th>Prereqs</th><th>TP</th><th>Amt</th><th>Effect</th><th></th></tr></thead>
+          <tbody>
+            {{#each selectedAdvancements}}
+            <tr>
+              <td>
+                <select class="unique-adv-select" data-unique-index="{{../../uniqueIndex}}" data-adv-index="{{@index}}">
+                  {{#each ../../availableAdvancements}}
+                  <option value="{{id}}" {{#if (eq id ../advancementId)}}selected{{/if}}>{{name}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td><input type="checkbox" class="unique-adv-free" data-unique-index="{{../../uniqueIndex}}" data-adv-index="{{@index}}" {{#if free}}checked{{/if}} /></td>
+              <td class="unique-adv-prereq">{{prerequisites}}</td>
+              <td>{{tpDisplay}}</td>
+              <td><input type="number" class="unique-adv-amount" data-unique-index="{{../../uniqueIndex}}" data-adv-index="{{@index}}" value="{{amount}}" min="1" max="5" /></td>
+              <td class="unique-adv-effect">{{{effect}}}</td>
+              <td>
+                <button type="button" class="delete-btn" data-action="remove-unique-advancement" data-unique-index="{{../../uniqueIndex}}" data-adv-index="{{@index}}"><i class="fas fa-times"></i></button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+
+      {{!-- Restrictions --}}
+      {{#if data.restrictions.length}}
+      <div class="unique-advres-section">
+        <div class="advdis-header">
+          Restrictions
+          <button type="button" class="add-btn" data-action="add-unique-restriction" data-unique-index="{{@index}}"><i class="fas fa-plus"></i></button>
+        </div>
+        <table class="advdis-table">
+          <thead><tr><th>Name</th><th>Locked Advs</th><th>TP</th><th>Effect</th><th></th></tr></thead>
+          <tbody>
+            {{#each selectedRestrictions}}
+            <tr>
+              <td>
+                <select class="unique-res-select" data-unique-index="{{../../uniqueIndex}}" data-res-index="{{@index}}">
+                  {{#each ../../availableRestrictions}}
+                  <option value="{{id}}" {{#if (eq id ../restrictionId)}}selected{{/if}}>{{name}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td class="unique-res-locked">{{lockedAdvs}}</td>
+              <td>{{tpDisplay}}</td>
+              <td class="unique-res-effect">{{{effect}}}</td>
+              <td>
+                <button type="button" class="delete-btn" data-action="remove-unique-restriction" data-unique-index="{{../../uniqueIndex}}" data-res-index="{{@index}}"><i class="fas fa-times"></i></button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{/if}}
+    </div>
+    {{else}}
+    <div class="empty-message">No unique abilities. Click <i class="fas fa-plus"></i> to add one.</div>
+    {{/each}}
+  </div>
+</div>

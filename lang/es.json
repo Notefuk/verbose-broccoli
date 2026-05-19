@@ -1,0 +1,226 @@
+{
+  "DBU": {
+    "SheetCharacter": "Hoja de Personaje DBU",
+    "SheetNPC": "Hoja de NPC DBU",
+    "SheetItem": "Hoja de Objeto DBU",
+
+    "Attributes": {
+      "agility": "Agilidad",
+      "force": "Fuerza",
+      "tenacity": "Tenacidad",
+      "scholarship": "Erudición",
+      "insight": "Perspicacia",
+      "magic": "Magia",
+      "personality": "Personalidad"
+    },
+
+    "AttributeAbbr": {
+      "agility": "AGI",
+      "force": "FUE",
+      "tenacity": "TEN",
+      "scholarship": "ERU",
+      "insight": "PER",
+      "magic": "MAG",
+      "personality": "CAR"
+    },
+
+    "Aptitudes": {
+      "haste": "Presteza",
+      "awareness": "Conciencia",
+      "might": "Poderío",
+      "defenseValue": "Valor de Defensa",
+      "soakValue": "Valor de Absorción",
+      "initiative": "Iniciativa",
+      "speedNormal": "Velocidad Normal",
+      "speedBoosted": "Velocidad Aumentada"
+    },
+
+    "SavingThrows": {
+      "impulsive": "Impulsivo",
+      "corporeal": "Corporal",
+      "cognitive": "Cognitivo",
+      "morale": "Moral"
+    },
+
+    "Resources": {
+      "lifePoints": "Puntos de Vida",
+      "kiPoints": "Puntos de Ki",
+      "capacity": "Capacidad",
+      "techniquePoints": "Puntos de Técnica"
+    },
+
+    "HealthThresholds": {
+      "healthy": "Saludable",
+      "bruised": "Magullado",
+      "injured": "Herido",
+      "critical": "Crítico"
+    },
+
+    "Skills": {
+      "acrobatics": "Acrobacia",
+      "flight": "Vuelo",
+      "thievery": "Hurto",
+      "stealth": "Sigilo",
+      "craftBasicItem": "Artesanía: Objeto Básico",
+      "craftApparel": "Artesanía: Vestimenta",
+      "craftWeapons": "Artesanía: Armas",
+      "craftVehicles": "Artesanía: Vehículos",
+      "knowledgeScience": "Conocimiento: Ciencia",
+      "knowledgeProfession": "Conocimiento: Profesión",
+      "knowledgeHistory": "Conocimiento: Historia",
+      "investigation": "Investigación",
+      "medicine": "Medicina",
+      "clairvoyance": "Clarividencia",
+      "concealment": "Ocultación",
+      "creatureHandling": "Trato con Criaturas",
+      "intuition": "Intuición",
+      "perception": "Percepción",
+      "pilot": "Pilotaje",
+      "survival": "Supervivencia",
+      "useMagic": "Usar Magia",
+      "bluff": "Engaño",
+      "cooking": "Cocina",
+      "intimidation": "Intimidación",
+      "persuasion": "Persuasión",
+      "performance": "Actuación"
+    },
+
+    "Races": {
+      "saiyan": "Saiyan",
+      "human": "Humano",
+      "namekian": "Namekiano",
+      "majin": "Majin",
+      "android": "Androide",
+      "arcosian": "Arcosiano",
+      "bioAndroid": "Bio-Androide",
+      "demon": "Demonio",
+      "tuffle": "Tuffle",
+      "shinjin": "Shinjin",
+      "custom": "Personalizado"
+    },
+
+    "Sizes": {
+      "nano": "Nano",
+      "tiny": "Diminuto",
+      "small": "Pequeño",
+      "medium": "Mediano",
+      "large": "Grande",
+      "enormous": "Enorme",
+      "gigantic": "Gigantesco",
+      "colossal": "Colosal"
+    },
+
+    "Foundations": {
+      "physical": "Físico",
+      "energy": "Energía",
+      "magic": "Magia"
+    },
+
+    "DamageCategories": {
+      "standard": "Estándar",
+      "direct": "Directo",
+      "lethal": "Letal"
+    },
+
+    "Profiles": {
+      "simple": "Simple",
+      "combination": "Combinación",
+      "launching": "Lanzamiento",
+      "megaFlare": "Mega Destello",
+      "blitz": "Blitz",
+      "crushing": "Aplastante",
+      "pinpoint": "Preciso",
+      "powered": "Potenciado",
+      "soaring": "Ascendente",
+      "sweeping": "Barrido",
+      "beam": "Rayo",
+      "blast": "Explosión",
+      "clearing": "Despeje",
+      "concentrated": "Concentrado",
+      "cutting": "Cortante",
+      "wave": "Onda",
+      "elementalDark": "Elemental (Oscuridad)",
+      "elementalEarth": "Elemental (Tierra)",
+      "elementalFire": "Elemental (Fuego)",
+      "elementalIce": "Elemental (Hielo)",
+      "elementalLight": "Elemental (Luz)",
+      "elementalLightning": "Elemental (Rayo)",
+      "elementalMetal": "Elemental (Metal)",
+      "elementalPlantlife": "Elemental (Vegetación)",
+      "elementalPoison": "Elemental (Veneno)",
+      "elementalWater": "Elemental (Agua)",
+      "elementalWind": "Elemental (Viento)"
+    },
+
+    "CombatConditions": {
+      "blinded": "Cegado",
+      "broken": "Quebrado",
+      "compelled": "Compelido",
+      "fatigued": "Fatigado",
+      "guardDown": "Guardia Baja",
+      "impaired": "Impedido",
+      "impediment": "Impedimento",
+      "pinned": "Inmovilizado",
+      "poisoned": "Envenenado",
+      "prone": "Derribado",
+      "shaken": "Asustado",
+      "sleeping": "Dormido",
+      "slowed": "Ralentizado",
+      "staggered": "Tambaleante",
+      "stressExhaustion": "Agotamiento por Estrés",
+      "suffocating": "Asfixiándose",
+      "transfigured": "Transfigurado"
+    },
+
+    "CombatRolls": {
+      "strike": "Golpear",
+      "wound": "Herir",
+      "dodge": "Esquivar"
+    },
+
+    "ItemTypes": {
+      "technique": "Técnica",
+      "transformation": "Transformación",
+      "talent": "Talento",
+      "item": "Objeto",
+      "equipment": "Equipamiento"
+    },
+
+    "UI": {
+      "powerLevel": "Nivel de Poder",
+      "tierOfPower": "Tier de Poder",
+      "race": "Raza",
+      "size": "Tamaño",
+      "score": "Puntuación",
+      "bonus": "Bonificación",
+      "modifier": "Modificador",
+      "ranks": "Rangos",
+      "total": "Total",
+      "add": "Añadir",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "roll": "Tirar",
+      "use": "Usar",
+      "biography": "Biografía",
+      "notes": "Notas",
+      "description": "Descripción",
+      "effects": "Efectos",
+      "prerequisites": "Prerrequisitos",
+      "kiCost": "Coste de Ki",
+      "tpCost": "Coste de TP",
+      "equipped": "Equipado",
+      "quantity": "Cantidad"
+    },
+
+    "Messages": {
+      "notEnoughKi": "¡No tienes suficientes Puntos de Ki!",
+      "notEnoughCapacity": "¡No tienes suficiente Capacidad!",
+      "skillRequired": "Necesitas al menos 1 rango en esta habilidad para usarla",
+      "steadfastSuccess": "¡ÉXITO!",
+      "steadfastFail": "¡FALLO!",
+      "critical": "¡CRÍTICO!",
+      "botch": "¡PIFIA!",
+      "defeated": "ha sido DERROTADO"
+    }
+  }
+}

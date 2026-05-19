@@ -1,0 +1,249 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <div class="dbu-old-sheet battle-jacket-sheet">
+
+    {{!-- HEADER --}}
+    <header class="sheet-header flexrow">
+      <div class="header-left portrait-container">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+        <div class="tier-overlay-badge">JT<span>{{jacketTier}}</span></div>
+        <div class="level-overlay-badge">JL<span>{{system.jacketLevel}}</span></div>
+      </div>
+      <div class="header-center">
+        <h1 class="character-name">
+          <input name="name" type="text" value="{{actor.name}}" placeholder="Battle Jacket Name" />
+        </h1>
+        <div class="character-info">
+          <span class="tier-badge">JT: <span>{{jacketTier}}</span></span>
+          <span class="level-badge">JL:
+            <input type="number" name="system.jacketLevel" value="{{system.jacketLevel}}" min="1" />
+          </span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="resource-bars">
+          <div class="resource life">
+            <label>Life Points</label>
+            <div class="visual-bar-wrapper">
+              <div class="visual-bar-fill life-fill" style="width: {{lpPercent}}%"></div>
+              <div class="visual-bar-content">
+                <input type="number" class="current" name="system.lp.value" value="{{system.lp.value}}" />
+                <span class="bar-separator">/</span>
+                <span class="max">{{system.lp.max}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="resource ki">
+            <label>Ki Points</label>
+            <div class="visual-bar-wrapper">
+              <div class="visual-bar-fill ki-fill" style="width: {{kpPercent}}%"></div>
+              <div class="visual-bar-content">
+                <input type="number" class="current" name="system.kp.value" value="{{system.kp.value}}" />
+                <span class="bar-separator">/</span>
+                <span class="max">{{system.kp.max}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    {{!-- CONFIGURATION --}}
+    <section class="bj-section bj-config">
+      <h3><i class="fas fa-cogs"></i> Configuration</h3>
+      <div class="bj-config-grid">
+        <div class="form-group">
+          <label>Grade</label>
+          <select name="system.jacketGrade">
+            {{#each gradeOptions}}
+            <option value="{{this.value}}" {{#if (eq this.value ../system.jacketGrade)}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Frame</label>
+          <select name="system.jacketFrame">
+            {{#each frameOptions}}
+            <option value="{{this.value}}" {{#if (eq this.value ../system.jacketFrame)}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Engine</label>
+          <select name="system.jacketEngine">
+            {{#each engineOptions}}
+            <option value="{{this.value}}" {{#if (eq this.value ../system.jacketEngine)}}selected{{/if}}>{{this.label}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Size</label>
+          <span class="bj-readonly">{{effectiveSizeCategory}}</span>
+        </div>
+      </div>
+    </section>
+
+    {{!-- DERIVED STATS --}}
+    <section class="bj-section bj-resources">
+      <h3><i class="fas fa-chart-bar"></i> Resources</h3>
+      <div class="bj-stats-row">
+        <span><b>Capacity:</b> {{capacity}}</span>
+        <span><b>Technique Points:</b> {{techniquePoints}}</span>
+        <span><b>Max Modules:</b> {{maxModules}}</span>
+      </div>
+    </section>
+
+    {{!-- COMBAT STATS --}}
+    <section class="bj-section bj-combat-stats">
+      <h3><i class="fas fa-shield-alt"></i> Combat Stats</h3>
+      <div class="bj-stats-grid">
+        <div class="bj-stat"><label>Awareness</label><span>{{system.awareness}}</span></div>
+        <div class="bj-stat"><label>Haste</label><span>{{system.haste}}</span></div>
+        <div class="bj-stat"><label>Soak</label><span>{{system.soak}}</span></div>
+        <div class="bj-stat"><label>Defense Value</label><span>{{system.defenseValue}}</span></div>
+        <div class="bj-stat"><label>Damage Reduction</label><span>{{system.damageReduction}}</span></div>
+        <div class="bj-stat"><label>Normal Speed</label><span>{{system.normalSpeed}}</span></div>
+        <div class="bj-stat"><label>Boosted Speed</label><span>{{system.boostedSpeed}}</span></div>
+        <div class="bj-stat"><label>Might</label><span>{{system.might}}</span></div>
+      </div>
+    </section>
+
+    {{!-- HEALTH THRESHOLDS --}}
+    <section class="bj-section bj-thresholds">
+      <h3><i class="fas fa-heartbeat"></i> Health Thresholds</h3>
+      <div class="bj-stats-row">
+        <span><b>Bruised:</b> {{healthThresholds.bruised}}</span>
+        <span><b>Injured:</b> {{healthThresholds.injured}}</span>
+        <span><b>Critical:</b> {{healthThresholds.critical}}</span>
+      </div>
+    </section>
+
+    {{!-- WEAK POINTS --}}
+    <section class="bj-section bj-weakpoints">
+      <h3><i class="fas fa-bullseye"></i> Weak Points (Called Shots)</h3>
+      <div class="bj-weakpoints-row">
+        <label>
+          <input type="checkbox" class="weak-point-toggle" data-field="frameDisabled" {{#if system.weakPoints.frameDisabled}}checked{{/if}} />
+          Frame Disabled
+        </label>
+        <label>
+          <input type="checkbox" class="weak-point-toggle" data-field="engineDisabled" {{#if system.weakPoints.engineDisabled}}checked{{/if}} />
+          Engine Disabled
+        </label>
+      </div>
+    </section>
+
+    {{!-- MODULES --}}
+    <section class="bj-section bj-modules">
+      <h3><i class="fas fa-puzzle-piece"></i> Modules</h3>
+
+      {{!-- Unique Frame Module --}}
+      {{#if frameUniqueModuleData}}
+      <div class="bj-module-card unique {{#if system.weakPoints.frameDisabled}}disabled{{/if}}">
+        <span class="module-tag">Frame</span>
+        <b>{{frameUniqueModuleData.name}}</b>
+        {{#if system.weakPoints.frameDisabled}}<span class="disabled-tag">(DISABLED)</span>{{/if}}
+        <p>{{frameUniqueModuleData.description}}</p>
+        {{#each frameUniqueModuleData.effects}}
+        <div class="module-effect"><span class="effect-type">[{{this.type}}]</span> {{this.text}}</div>
+        {{/each}}
+      </div>
+      {{/if}}
+
+      {{!-- Unique Engine Module --}}
+      {{#if engineUniqueModuleData}}
+      <div class="bj-module-card unique {{#if system.weakPoints.engineDisabled}}disabled{{/if}}">
+        <span class="module-tag">Engine</span>
+        <b>{{engineUniqueModuleData.name}}</b>
+        {{#if system.weakPoints.engineDisabled}}<span class="disabled-tag">(DISABLED)</span>{{/if}}
+        <p>{{engineUniqueModuleData.description}}</p>
+        {{#each engineUniqueModuleData.effects}}
+        <div class="module-effect"><span class="effect-type">[{{this.type}}]</span> {{this.text}}</div>
+        {{/each}}
+      </div>
+      {{/if}}
+
+      {{!-- Standard Module Slots --}}
+      {{#each installedModules}}
+      <div class="bj-module-card standard">
+        <div class="module-header">
+          <b>{{this.name}}</b>
+          <button type="button" data-action="remove-module" data-slot="{{@index}}" title="Remove"><i class="fas fa-trash"></i></button>
+        </div>
+        <p>{{this.description}}</p>
+        {{#each this.effects}}
+        <div class="module-effect"><span class="effect-type">[{{this.type}}]</span> {{this.text}}</div>
+        {{/each}}
+      </div>
+      {{/each}}
+
+      {{!-- Add module dropdown --}}
+      {{#if (lt installedModules.length maxModules)}}
+      <div class="bj-add-module">
+        <select class="module-select" data-slot="{{installedModules.length}}">
+          <option value="">-- Add Module --</option>
+          {{#each availableModules}}
+          <option value="{{this.id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{/if}}
+    </section>
+
+    {{!-- ABILITIES --}}
+    <section class="bj-section bj-abilities">
+      <h3><i class="fas fa-bolt"></i> Abilities</h3>
+
+      {{!-- Techniques --}}
+      <div class="bj-ability-group">
+        <h4>Signature Techniques <button type="button" data-action="add-bj-technique"><i class="fas fa-plus"></i></button></h4>
+        {{#each system.signatureTechniques}}
+        <div class="bj-ability-row">
+          <input type="text" name="system.signatureTechniques.{{@index}}.name" value="{{this.name}}" />
+          <input type="text" name="system.signatureTechniques.{{@index}}.description" value="{{this.description}}" placeholder="Description" />
+          <button type="button" data-action="delete-bj-technique" data-index="{{@index}}"><i class="fas fa-trash"></i></button>
+        </div>
+        {{/each}}
+      </div>
+
+      {{!-- Auras --}}
+      <div class="bj-ability-group">
+        <h4>Auras <button type="button" data-action="add-bj-aura"><i class="fas fa-plus"></i></button></h4>
+        {{#each system.signatureAuras}}
+        <div class="bj-ability-row">
+          <input type="text" name="system.signatureAuras.{{@index}}.name" value="{{this.name}}" />
+          <input type="text" name="system.signatureAuras.{{@index}}.description" value="{{this.description}}" placeholder="Description" />
+          <button type="button" data-action="delete-bj-aura" data-index="{{@index}}"><i class="fas fa-trash"></i></button>
+        </div>
+        {{/each}}
+      </div>
+
+      {{!-- Unique Abilities --}}
+      <div class="bj-ability-group">
+        <h4>Unique Abilities <button type="button" data-action="add-bj-ua"><i class="fas fa-plus"></i></button></h4>
+        {{#each system.uniqueAbilities}}
+        <div class="bj-ability-row">
+          <input type="text" name="system.uniqueAbilities.{{@index}}.abilityKey" value="{{this.abilityKey}}" />
+          <button type="button" data-action="delete-bj-ua" data-index="{{@index}}"><i class="fas fa-trash"></i></button>
+        </div>
+        {{/each}}
+      </div>
+    </section>
+
+    {{!-- PILOT --}}
+    <section class="bj-section bj-pilot">
+      <h3><i class="fas fa-user-astronaut"></i> Pilot</h3>
+      {{#if pilotId}}
+      <div class="bj-pilot-info">
+        <span>Current Pilot: <b>{{pilotName}}</b></span>
+        <button type="button" data-action="unassign-pilot"><i class="fas fa-times"></i> Unassign</button>
+      </div>
+      {{else}}
+      <div class="bj-pilot-info">
+        <span>No pilot assigned</span>
+        <button type="button" data-action="assign-pilot"><i class="fas fa-user-plus"></i> Assign Pilot</button>
+      </div>
+      {{/if}}
+    </section>
+
+  </div>
+</form>

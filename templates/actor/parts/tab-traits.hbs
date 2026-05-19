@@ -1,0 +1,112 @@
+<div class="traits-container">
+
+  {{!-- Race Info Bar --}}
+  <div class="traits-info">
+    <span><label>Race:</label> <span class="info-value">{{raceLabel}}</span></span>
+    <span><label>Subrace:</label> <span class="info-value">{{subraceLabel}}</span></span>
+    <span><label>Proficient Save:</label>
+      {{#if isCustomSpecies}}
+        <select name="system.customSpeciesSave" class="info-value">
+          <option value="impulsive" {{#if (eq system.customSpeciesSave "impulsive")}}selected{{/if}}>Impulsive</option>
+          <option value="cognitive" {{#if (eq system.customSpeciesSave "cognitive")}}selected{{/if}}>Cognitive</option>
+          <option value="corporeal" {{#if (eq system.customSpeciesSave "corporeal")}}selected{{/if}}>Corporeal</option>
+          <option value="morale" {{#if (eq system.customSpeciesSave "morale")}}selected{{/if}}>Morale</option>
+        </select>
+      {{else}}
+        <span class="info-value capitalize">{{system.proficientSave}}</span>
+      {{/if}}
+    </span>
+    <span><label>Current Size:</label> <span class="info-value capitalize">{{system.status.currentSize}}</span></span>
+  </div>
+
+  {{!-- Section Header with Add Button --}}
+  <div class="section-header">
+    Racial Traits
+    <button type="button" class="add-btn" data-action="add-trait" title="Add Racial Trait"><i class="fas fa-plus"></i></button>
+  </div>
+
+  {{!-- Traits List --}}
+  <div class="traits-list">
+    {{#if (gt characterTraits.length 0)}}
+      {{#each characterTraits}}
+      <div class="trait-card" data-trait-id="{{id}}">
+        <div class="trait-header">
+          <span class="trait-category-badge {{traitCategory}}">{{traitCategory}}</span>
+          <span class="trait-name">{{name}}</span>
+          <span class="trait-race-tag">{{race}}</span>
+          <button type="button" class="trait-expand" data-action="toggle-trait" title="Expand/Collapse">
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <button type="button" class="delete-btn item-delete" data-action="delete-trait" data-trait-id="{{id}}" title="Remove Trait">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+          {{#if (eq id battleBornTraitId)}}
+          <div class="bb-inline-display">
+            Strike: {{#each ../bbStrikePips}}<span class="bb-pip-mini {{#if filled}}filled{{/if}}"></span>{{/each}}
+            | Dodge: {{#each ../bbDodgePips}}<span class="bb-pip-mini {{#if filled}}filled{{/if}}"></span>{{/each}}
+            | Wound: {{#each ../bbWoundPips}}<span class="bb-pip-mini {{#if filled}}filled{{/if}}"></span>{{/each}}
+            | Total: {{../system.battleBorn.total}}
+          </div>
+          {{/if}}
+        {{#if description}}
+        <div class="trait-description">{{description}}</div>
+        {{/if}}
+        <div class="trait-effects-list">
+          {{#each effects}}
+          <div class="trait-effect {{activationType}}">
+            <span class="effect-level">Lv.{{level}}</span>
+            <span class="effect-keyword {{activationType}}">[{{keyword}}]</span>
+            <span class="effect-text">{{{text}}}</span>
+            {{#if options}}
+            <div class="effect-options">
+              {{#if (eq activationType "option")}}
+                {{!-- Single option: dropdown --}}
+                <select class="option-select" data-trait-id="{{../id}}" data-effect-level="{{level}}">
+                  {{#each options}}
+                  <option value="{{name}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+                  {{/each}}
+                </select>
+                {{!-- Show selected option text --}}
+                {{#each options}}
+                  {{#if selected}}
+                  <div class="option-detail">
+                    <span class="option-keyword">[{{keyword}}]</span>
+                    <span class="option-text">{{{text}}}</span>
+                  </div>
+                  {{/if}}
+                {{/each}}
+              {{else if (eq activationType "multi-option")}}
+                {{!-- Multi-option: checkboxes --}}
+                {{#if optionCount}}<div class="option-limit">Choose up to {{optionCount}} ({{selectedCount}}/{{optionCount}} selected)</div>{{/if}}
+                {{#each options}}
+                <label class="effect-option-checkbox">
+                  <input type="checkbox" class="option-checkbox" data-trait-id="{{../../id}}" data-effect-level="{{../level}}" data-option-name="{{name}}" data-max-options="{{../optionCount}}" {{#if selected}}checked{{/if}} {{#if disabled}}disabled{{/if}} />
+                  <span class="option-name">{{name}}</span>
+                  <span class="option-text">{{{text}}}</span>
+                </label>
+                {{/each}}
+              {{else if (eq activationType "choice")}}
+                {{!-- Choice: shows text based on previous option --}}
+                {{#each options}}
+                  {{#if selected}}
+                  <div class="option-detail choice-detail">
+                    <span class="option-name">{{name}}</span>
+                    <span class="option-keyword">[{{keyword}}]</span>
+                    <span class="option-text">{{{text}}}</span>
+                  </div>
+                  {{/if}}
+                {{/each}}
+              {{/if}}
+            </div>
+            {{/if}}
+          </div>
+          {{/each}}
+        </div>
+      </div>
+      {{/each}}
+    {{else}}
+      <div class="empty-message">No racial traits selected. Click <i class="fas fa-plus"></i> to add traits.</div>
+    {{/if}}
+  </div>
+</div>

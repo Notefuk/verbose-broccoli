@@ -1,0 +1,800 @@
+<div class="main-grid">
+  {{!-- ==================== LEFT COLUMN ==================== --}}
+  <div class="main-left">
+
+    {{!-- BASIC INFORMATION --}}
+    <div class="section basic-info-section">
+      <div class="section-header">Basic Information</div>
+      <table class="basic-info-table">
+        <tbody>
+          <tr>
+            <td class="info-label">Name</td>
+            <td class="info-value">
+              <span class="info-display">{{actor.name}}</span>
+            </td>
+            <td class="info-label">Player</td>
+            <td class="info-value">
+              <input type="text" name="system.details.player" value="{{system.details.player}}" />
+            </td>
+          </tr>
+          <tr>
+            <td class="info-label">Race</td>
+            <td class="info-value">
+              <select name="system.race">
+                {{selectOptions raceOptions selected=system.race}}
+              </select>
+            </td>
+            <td class="info-label">Subrace</td>
+            <td class="info-value">
+              <select name="system.subrace">
+                <option value="none">None</option>
+                {{#each subraceOptions}}
+                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+                {{/each}}
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="info-label">Age</td>
+            <td class="info-value">
+              <input type="text" name="system.details.age" value="{{system.details.age}}" autocomplete="off" />
+            </td>
+            <td class="info-label">Gender</td>
+            <td class="info-value">
+              <input type="text" name="system.details.gender" value="{{system.details.gender}}" autocomplete="off" />
+            </td>
+          </tr>
+          <tr>
+            <td class="info-label">Skin Tone</td>
+            <td class="info-value">
+              <input type="text" name="system.details.skinTone" value="{{system.details.skinTone}}" autocomplete="off" />
+            </td>
+            <td class="info-label">Eye Color</td>
+            <td class="info-value">
+              <input type="text" name="system.details.eyeColor" value="{{system.details.eyeColor}}" autocomplete="off" />
+            </td>
+          </tr>
+          <tr>
+            <td class="info-label">Hair Color</td>
+            <td class="info-value">
+              <input type="text" name="system.details.hairColor" value="{{system.details.hairColor}}" autocomplete="off" />
+            </td>
+            <td class="info-label">Base Size</td>
+            <td class="info-value">
+              <select name="system.baseSize">
+                {{selectOptions sizeOptions selected=system.baseSize}}
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="info-label">Height</td>
+            <td class="info-value">
+              <input type="text" name="system.details.height" value="{{system.details.height}}" autocomplete="off" />
+            </td>
+            <td class="info-label">Weight</td>
+            <td class="info-value">
+              <input type="text" name="system.details.weight" value="{{system.details.weight}}" autocomplete="off" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- ATTRIBUTES --}}
+    <div class="section attributes-section">
+      <div class="section-header">Attributes</div>
+      <table class="attributes-table">
+        <thead>
+          <tr>
+            <th class="col-name">Name</th>
+            <th class="col-racial">Racial</th>
+            <th class="col-progression">Prog.</th>
+            <th class="col-score">Score</th>
+            <th class="col-modifier">Mod</th>
+            <th class="col-total">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each attributes}}
+          <tr data-attr="{{key}}">
+            <td class="attr-name">{{name}}</td>
+            <td class="attr-racial">
+              <input type="number" value="{{racial}}" disabled />
+            </td>
+            <td class="attr-progression">
+              <input type="number" value="{{progression}}" disabled />
+            </td>
+            <td class="attr-score">{{score}}</td>
+            <td class="attr-modifier">{{formatMod modifier}}</td>
+            <td class="attr-total">{{totalScore}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- STATUS --}}
+    <div class="section status-section">
+      <div class="section-header">Status</div>
+      <table class="status-table">
+        <tbody>
+          <tr>
+            <td class="status-label">Max Life Points</td>
+            <td class="status-value">{{system.lifePoints.max}}</td>
+            <td class="status-label">Max Ki Pool</td>
+            <td class="status-value">{{system.kiPool.max}}</td>
+          </tr>
+          <tr>
+            <td class="status-label">Modify Life</td>
+            <td class="status-value">
+              <input type="number" name="system.lifePoints.modify" value="{{system.lifePoints.modify}}" />
+            </td>
+            <td class="status-label">Modify Ki</td>
+            <td class="status-value">
+              <input type="number" name="system.kiPool.modify" value="{{system.kiPool.modify}}" />
+            </td>
+          </tr>
+          <tr>
+            <td class="status-label">Current Life</td>
+            <td class="status-value">
+              <input type="number" name="system.lifePoints.value" value="{{system.lifePoints.value}}" />
+            </td>
+            <td class="status-label">Ki Remaining</td>
+            <td class="status-value">
+              <input type="number" name="system.kiPool.value" value="{{system.kiPool.value}}" />
+            </td>
+          </tr>
+          <tr>
+            <td class="status-label">Health Status</td>
+            <td class="status-value health-status-{{system.status.healthStatus}}">
+              {{system.status.healthStatusLabel}}
+            </td>
+            <td class="status-label">Max Capacity</td>
+            <td class="status-value">{{system.status.maxCapacity}}</td>
+          </tr>
+          <tr>
+            <td class="status-label">Super Stacks</td>
+            <td class="status-value">
+              <input type="number" name="system.status.superStacks" value="{{system.status.superStacks}}" />
+            </td>
+            <td class="status-label">Capacity Spent</td>
+            <td class="status-value">
+              <input type="number" name="system.status.capacitySpent" value="{{system.status.capacitySpent}}" />
+            </td>
+          </tr>
+          <tr>
+            <td class="status-label">Might</td>
+            <td class="status-value">{{system.status.might}}</td>
+            <td class="status-label">Capacity Left</td>
+            <td class="status-value">{{system.status.capacityLeft}}</td>
+          </tr>
+          <tr>
+            <td class="status-label">Healing Surge</td>
+            <td class="status-value">{{system.status.healingSurge}}</td>
+            <td class="status-label">Power Surge Ki</td>
+            <td class="status-value">{{system.status.powerSurgeKi}}</td>
+          </tr>
+          <tr>
+            <td class="status-label">Current Size</td>
+            <td class="status-value">
+              <select name="system.status.currentSize">
+                {{selectOptions sizeOptions selected=system.status.currentSize}}
+              </select>
+            </td>
+            <td class="status-label">Soak</td>
+            <td class="status-value">{{system.status.soak}}</td>
+          </tr>
+          <tr>
+            <td class="status-label">Squares</td>
+            <td class="status-value">{{system.status.squaresOccupied}}</td>
+            <td class="status-label">Defense</td>
+            <td class="status-value">{{system.aptitudes.defenseValue}}</td>
+          </tr>
+          <tr>
+            <td class="status-label">Damage Reduction</td>
+            <td class="status-value">{{system.status.damageReduction}}</td>
+            <td class="status-label"></td>
+            <td class="status-value"></td>
+          </tr>
+          <tr>
+            <td class="status-label">Melee Reach</td>
+            <td class="status-value">{{system.status.meleeReach}}</td>
+            <td class="status-label">Long Range</td>
+            <td class="status-value">{{system.status.longRange}}</td>
+          </tr>
+          <tr>
+            <td class="status-label">Normal Speed</td>
+            <td class="status-value">{{system.status.normalSpeed}} sq.</td>
+            <td class="status-label">Boosted Speed</td>
+            <td class="status-value">{{system.status.boostedSpeed}} sq.</td>
+          </tr>
+          {{#unless (eq system.status.sizeStealthMod 0)}}
+          <tr>
+            <td class="status-label">Stealth Mod</td>
+            <td class="status-value size-mod-value {{#if (gt system.status.sizeStealthMod 0)}}positive{{else}}negative{{/if}}">
+              {{formatMod system.status.sizeStealthMod}}
+            </td>
+            <td class="status-label">Intimidation Mod</td>
+            <td class="status-value size-mod-value {{#if (gt system.status.sizeIntimidationMod 0)}}positive{{else}}negative{{/if}}">
+              {{formatMod system.status.sizeIntimidationMod}}
+            </td>
+          </tr>
+          {{/unless}}
+          <tr id="activeAuraRow">
+            <td class="status-label">Active Aura</td>
+            <td class="status-value">
+              <span class="active-aura-name">{{#if activeAura}}{{activeAura.name}}{{else}}-{{/if}}</span>
+            </td>
+            <td class="status-label">Aura KP</td>
+            <td class="status-value">
+              <span class="active-aura-kp">{{#if activeAura}}{{activeAura.finalKP}}(T) / {{activeAura.maintenanceKP}}(T) maint.{{else}}-{{/if}}</span>
+            </td>
+          </tr>
+          <tr id="activeAuraEffectsRow">
+            <td class="status-label">Aura Effects</td>
+            <td class="status-value" colspan="3">
+              <span class="aura-effects-list">
+                {{#each activeAuraEffects}}
+                <span class="aura-effect-tag {{type}}">{{name}}</span>
+                {{else}}
+                -
+                {{/each}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- DAMAGE CALCULATOR --}}
+    <div class="section damage-calc-section">
+      <div class="section-header">Damage Calculator</div>
+      <table class="damage-calc-table">
+        <tbody>
+          <tr>
+            <td class="calc-label">Dmg Category</td>
+            <td class="calc-value">
+              <select name="system.damageCalc.category">
+                {{selectOptions dmgCategoryOptions selected=system.damageCalc.category}}
+              </select>
+            </td>
+            <td class="calc-label">Defense</td>
+            <td class="calc-value">
+              <select name="system.damageCalc.defense">
+                {{selectOptions defenseOptions selected=system.damageCalc.defense}}
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td class="calc-label">Damage Reduction</td>
+            <td class="calc-value">
+              <input type="number" name="system.damageCalc.damageReduction"
+                value="{{system.damageCalc.damageReduction}}" />
+            </td>
+            <td class="calc-label">Total Reduction</td>
+            <td class="calc-value">{{system.damageCalc.totalReduction}}</td>
+          </tr>
+          <tr>
+            <td class="calc-label">Wound Roll</td>
+            <td class="calc-value">
+              <input type="number" name="system.damageCalc.woundRoll" value="{{system.damageCalc.woundRoll}}" />
+            </td>
+            <td class="calc-label">Health Reduction</td>
+            <td class="calc-value">{{system.damageCalc.healthReduction}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- HEALTH THRESHOLDS --}}
+    <div class="section thresholds-section">
+      <div class="section-header">Health Thresholds</div>
+      <table class="thresholds-table">
+        <thead>
+          <tr>
+            <th>Bruised ({{system.thresholds.bruised.value}})</th>
+            <th>Injured ({{system.thresholds.injured.value}})</th>
+            <th>Critical ({{system.thresholds.critical.value}})</th>
+            <th>Penalties</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{#if system.thresholds.bruised.crossed}}<i class="fas fa-times-circle" style="color:var(--danger-color,#e53935);"></i>{{else}}<i class="fas fa-check-circle" style="color:#4caf50;"></i>{{/if}}</td>
+            <td>{{#if system.thresholds.injured.crossed}}<i class="fas fa-times-circle" style="color:var(--danger-color,#e53935);"></i>{{else}}<i class="fas fa-check-circle" style="color:#4caf50;"></i>{{/if}}</td>
+            <td>{{#if system.thresholds.critical.crossed}}<i class="fas fa-times-circle" style="color:var(--danger-color,#e53935);"></i>{{else}}<i class="fas fa-check-circle" style="color:#4caf50;"></i>{{/if}}</td>
+            <td>{{#if system.thresholds.penalties}}-{{system.thresholds.penalties}}{{else}}0{{/if}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- SAVING THROWS --}}
+    <div class="section saves-section">
+      <div class="section-header">Saving Throws</div>
+      <table class="saves-table">
+        <tbody>
+          <tr>
+            <td class="save-label">Impulsive{{#if system.savingThrows.impulsive.proficient}} *{{/if}}</td>
+            <td class="save-value">
+              {{formatMod system.savingThrows.impulsive.bonus}} ({{system.savingThrows.impulsive.ct}}+)
+            </td>
+            <td class="save-label">Cognitive{{#if system.savingThrows.cognitive.proficient}} *{{/if}}</td>
+            <td class="save-value">
+              {{formatMod system.savingThrows.cognitive.bonus}} ({{system.savingThrows.cognitive.ct}}+)
+            </td>
+          </tr>
+          <tr>
+            <td class="save-label">Corporeal{{#if system.savingThrows.corporeal.proficient}} *{{/if}}</td>
+            <td class="save-value">
+              {{formatMod system.savingThrows.corporeal.bonus}} ({{system.savingThrows.corporeal.ct}}+)
+            </td>
+            <td class="save-label">Morale{{#if system.savingThrows.morale.proficient}} *{{/if}}</td>
+            <td class="save-value">
+              {{formatMod system.savingThrows.morale.bonus}} ({{system.savingThrows.morale.ct}}+)
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- APTITUDES --}}
+    <div class="section aptitudes-section">
+      <div class="aptitudes-grid">
+        <div class="aptitude-group">
+          <div class="section-header">Strike Bonus</div>
+          <table class="aptitude-table">
+            <thead>
+              <tr>
+                <th>Haste</th>
+                <th>Awareness</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{system.aptitudes.haste}}</td>
+                <td>{{system.aptitudes.awareness}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="aptitude-group">
+          <div class="section-header">Misc Aptitudes</div>
+          <table class="aptitude-table">
+            <thead>
+              <tr>
+                <th>Initiative</th>
+                <th>Defense Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{system.aptitudes.initiative}}</td>
+                <td>{{system.aptitudes.defenseValue}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {{!-- COMBAT ROLLS --}}
+    <div class="section combat-rolls-section">
+      <div class="section-header">Combat Rolls</div>
+      <table class="aptitude-table combat-rolls-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Derived Value</th>
+            <th>Additional Mods</th>
+            <th>Total (crit)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cr-name">Strike</td>
+            <td>{{combatRolls.strike.derivedValue}}</td>
+            <td>{{combatRolls.strike.additionalMods}}</td>
+            <td>{{combatRolls.strike.total}} ({{combatRolls.strike.crit}})</td>
+          </tr>
+          <tr>
+            <td class="cr-name">Dodge</td>
+            <td>{{combatRolls.dodge.derivedValue}}</td>
+            <td>{{combatRolls.dodge.additionalMods}}</td>
+            <td>{{combatRolls.dodge.total}} ({{combatRolls.dodge.crit}})</td>
+          </tr>
+        </tbody>
+        <thead>
+          <tr class="cr-subheader">
+            <th>Attack Type</th>
+            <th colspan="2">Strike (crit)</th>
+            <th>Wound (crit)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="cr-name cr-physical">Physical</td>
+            <td colspan="2">{{combatRolls.strikeForType}}</td>
+            <td>{{combatRolls.wound.physical.total}} ({{combatRolls.wound.physical.crit}})</td>
+          </tr>
+          <tr>
+            <td class="cr-name cr-energy">Energy</td>
+            <td colspan="2">{{combatRolls.strikeForType}}</td>
+            <td>{{combatRolls.wound.energy.total}} ({{combatRolls.wound.energy.crit}})</td>
+          </tr>
+          <tr>
+            <td class="cr-name cr-magic">Magic</td>
+            <td colspan="2">{{combatRolls.strikeForType}}</td>
+            <td>{{combatRolls.wound.magic.total}} ({{combatRolls.wound.magic.crit}})</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  {{!-- ==================== RIGHT COLUMN ==================== --}}
+  <div class="main-right">
+
+    {{!-- CUSTOM BUFFS/DEBUFFS --}}
+    <div class="section custom-buffs-section">
+      <div class="section-header custom-buffs-header">
+        Custom Buffs &amp; Debuffs
+        <button type="button" class="add-btn" data-action="add-custom-buff"><i class="fas fa-plus"></i></button>
+      </div>
+      <datalist id="buff-effect-options">
+        {{!-- Attributes --}}
+        <option value="AG Score">
+        <option value="FO Score">
+        <option value="TE Score">
+        <option value="SC Score">
+        <option value="IN Score">
+        <option value="MA Score">
+        <option value="PE Score">
+        <option value="AG Modifier">
+        <option value="FO Modifier">
+        <option value="TE Modifier">
+        <option value="SC Modifier">
+        <option value="IN Modifier">
+        <option value="MA Modifier">
+        <option value="PE Modifier">
+        {{!-- Progression / Tier --}}
+        <option value="TP per Skill Improvement">
+        <option value="ToP (Breakthrough)">
+        <option value="ToP Extra Dice Cat.">
+        <option value="ToP Extra Dice Cat. (Dodge)">
+        <option value="ToP Extra Dice Cat. (Strike)">
+        <option value="ToP Extra Dice Cat. (Wound)">
+        {{!-- Resources --}}
+        <option value="Max Life Points">
+        <option value="Max Life Points ±1/4">
+        <option value="Max Ki Pool">
+        <option value="Max Ki Pool ±1/4">
+        <option value="Max Capacity">
+        <option value="Max Capacity ±1/4">
+        <option value="Racial Life Modifier">
+        {{!-- Defense --}}
+        <option value="Damage Reduction">
+        <option value="Soak">
+        <option value="Soak (from Exceed Trait)">
+        <option value="Double Base Soak">
+        <option value="Super Stacks">
+        <option value="Power Burst S. Stacks">
+        <option value="No Super Stack Pen.">
+        <option value="Super Stack Extra Dice">
+        <option value="Super Stack Dice Category">
+        <option value="Long Range Distance">
+        {{!-- Saves --}}
+        <option value="All Saves">
+        <option value="Impulsive Saves">
+        <option value="Cognitive Saves">
+        <option value="Corporeal Saves">
+        <option value="Morale Saves">
+        {{!-- Combat stats --}}
+        <option value="Haste">
+        <option value="Awareness">
+        <option value="Initiative">
+        <option value="Defense Value">
+        <option value="Combat Rolls">
+        {{!-- Strike --}}
+        <option value="Strike (All)">
+        <option value="Strike CT (All)">
+        <option value="Strike (Physical)">
+        <option value="Strike CT (Physical)">
+        <option value="Strike (Energy)">
+        <option value="Strike CT (Energy)">
+        <option value="Strike (Magic)">
+        <option value="Strike CT (Magic)">
+        {{!-- Dodge --}}
+        <option value="Dodge">
+        <option value="Dodge CT">
+        {{!-- Wound --}}
+        <option value="Wound (All)">
+        <option value="Wound CT (All)">
+        <option value="Wound (Physical)">
+        <option value="Wound CT (Physical)">
+        <option value="Wound (Energy)">
+        <option value="Wound CT (Energy)">
+        <option value="Wound (Magic)">
+        <option value="Wound CT (Magic)">
+        {{!-- Might / Stress / Threshold --}}
+        <option value="Might">
+        <option value="Might for Clashes">
+        <option value="Stress Bonus">
+        <option value="Threshold Breaker">
+        {{!-- Speed --}}
+        <option value="Normal Speed">
+        <option value="Boosted Speed">
+        <option value="Both Speeds">
+        <option value="Normal Speed ±1/4">
+        <option value="Boosted Speed ±1/4">
+        <option value="Both Speeds ±1/4">
+        <option value="Halve Normal Speed">
+        <option value="Halve Boosted Speed">
+        <option value="Halve Both Speeds">
+        {{!-- Misc --}}
+        <option value="Size Category">
+        <option value="No Strike Penalties">
+        <option value="No Dodge Penalties">
+        <option value="No Wound Penalties">
+        <option value="Hype Maneuver">
+        <option value="Analysis Maneuver (Investigation)">
+        <option value="Analysis Maneuver (Intuition)">
+        {{!-- Skills - by attribute group --}}
+        <option value="Agility Skills">
+        <option value="Force Skills">
+        <option value="Scholarship Skills">
+        <option value="Insight Skills">
+        <option value="Magic Skills">
+        <option value="Personality Skills">
+        {{!-- Skills - individual --}}
+        <option value="Acrobatics">
+        <option value="Bluff">
+        <option value="Clairvoyance">
+        <option value="Concealment">
+        <option value="Craft">
+        <option value="Creature Handling">
+        <option value="Intimidation">
+        <option value="Intuition">
+        <option value="Investigation">
+        <option value="Knowledge">
+        <option value="Medicine">
+        <option value="Perception">
+        <option value="Performance">
+        <option value="Persuasion">
+        <option value="Pilot">
+        <option value="Stealth">
+        <option value="Survival">
+        <option value="Thievery">
+        <option value="Use Magic">
+        {{!-- States / Greater Dice --}}
+        <option value="States">
+        <option value="Greater Dice Category">
+        <option value="Greater Dice (All)">
+        <option value="Greater Dice (Dodge)">
+        <option value="Greater Dice (Strike)">
+        <option value="Greater Dice (Wound)">
+        {{!-- ToP Extra Dice --}}
+        <option value="ToP Extra Dice (All)">
+        <option value="ToP Extra Dice (Dodge)">
+        <option value="ToP Extra Dice (Strike)">
+        <option value="ToP Extra Dice (Wound)">
+        {{!-- Extra dN dice (Combat Rolls) --}}
+        <option value="Extra d4 (Combat Rolls)">
+        <option value="Extra d6 (Combat Rolls)">
+        <option value="Extra d8 (Combat Rolls)">
+        <option value="Extra d10 (Combat Rolls)">
+        {{!-- Extra dN dice per type --}}
+        <option value="Extra d4 (Dodge)">
+        <option value="Extra d6 (Dodge)">
+        <option value="Extra d8 (Dodge)">
+        <option value="Extra d10 (Dodge)">
+        <option value="Extra d4 (Strike)">
+        <option value="Extra d6 (Strike)">
+        <option value="Extra d8 (Strike)">
+        <option value="Extra d10 (Strike)">
+        <option value="Extra d4 (Wound)">
+        <option value="Extra d6 (Wound)">
+        <option value="Extra d8 (Wound)">
+        <option value="Extra d10 (Wound)">
+        <option value="Surging Extra Dice">
+        {{!-- Signature Techniques --}}
+        <option value="Signature CT (Strike)">
+        <option value="Signature Strike">
+        <option value="Signature CT (Wound)">
+        <option value="Signature Wound">
+        <option value="Signature Extra ToP Dice (All)">
+        <option value="Signature Extra ToP Dice (Strike)">
+        <option value="Signature Extra ToP Dice (Wound)">
+        <option value="Signature d4 (All)">
+        <option value="Signature d6 (All)">
+        <option value="Signature d8 (All)">
+        <option value="Signature d10 (All)">
+        <option value="Signature d4 (Strike)">
+        <option value="Signature d6 (Strike)">
+        <option value="Signature d8 (Strike)">
+        <option value="Signature d10 (Strike)">
+        <option value="Signature d4 (Wound)">
+        <option value="Signature d6 (Wound)">
+        <option value="Signature d8 (Wound)">
+        <option value="Signature d10 (Wound)">
+        {{!-- Clash / Weapons --}}
+        <option value="Duel Clash Bonus">
+        <option value="Armed Strike">
+        <option value="Armed Wound">
+        <option value="Unarmed Strike">
+        <option value="Unarmed Wound">
+        {{!-- Ki Cost reductions --}}
+        <option value="Ki Point Cost Attacks">
+        <option value="Ki Point Cost Attacks (no cap)">
+        <option value="Ki Point Cost Unique Abilities">
+        <option value="Ki Point Cost Unique Abilities (Magical)">
+        <option value="Ki Point Cost Unique Abilities (Technical)">
+        {{!-- Energy Charges --}}
+        <option value="Energy Charge Dice Category">
+        <option value="Signature Energy Charge Dice Category">
+        {{!-- State Dice --}}
+        <option value="Raging Dice Size">
+        <option value="Surging Dice Size">
+        <option value="Superior Dice Size">
+        {{!-- Misc combat --}}
+        <option value="Attacking Damage Category">
+        <option value="Ignore Transformation Lite">
+        <option value="I'm being Bludgeoned">
+        {{!-- Legacy aliases (kept for backward compat) --}}
+        <option value="Healing Surge">
+        <option value="Power Surge">
+      </datalist>
+      <div class="custom-buffs-container">
+        <table class="custom-buffs-table">
+          <thead>
+            <tr>
+              <th class="col-active">Active</th>
+              <th class="col-effect">Effect</th>
+              <th class="col-flat">Flat</th>
+              <th class="col-bt">×bT</th>
+              <th class="col-t">×T</th>
+              <th class="col-total">Total</th>
+              <th class="col-notes">Notes</th>
+              <th class="col-del"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each system.customBuffs}}
+            <tr data-buff-index="{{@index}}">
+              <td class="col-active">
+                <input type="checkbox" name="system.customBuffs.{{@index}}.active" {{checked active}} />
+              </td>
+              <td class="col-effect">
+                <input class="buff-effect-input" type="text" name="system.customBuffs.{{@index}}.effect" value="{{effect}}"
+                  list="buff-effect-options" autocomplete="off" />
+              </td>
+              <td class="col-flat">
+                <input class="buff-input" type="number" name="system.customBuffs.{{@index}}.flat" value="{{flat}}" />
+              </td>
+              <td class="col-bt">
+                <input class="buff-input" type="number" name="system.customBuffs.{{@index}}.bT" value="{{bT}}" />
+              </td>
+              <td class="col-t">
+                <input class="buff-input" type="number" name="system.customBuffs.{{@index}}.T" value="{{T}}" />
+              </td>
+              <td class="col-total">
+                {{buffTotal}}
+              </td>
+              <td class="col-notes">
+                <input class="buff-notes-input" type="text" name="system.customBuffs.{{@index}}.notes" value="{{notes}}"
+                  placeholder="¿Por qué? (quest reward, GM boon, etc.)" />
+              </td>
+              <td class="col-del">
+                <button type="button" class="delete-btn" data-action="delete-custom-buff" data-index="{{@index}}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {{!-- EFFECT PANEL --}}
+    <div class="section effect-panel">
+      <div class="effect-panel-header">
+        <span class="effect-panel-title">Active Effects</span>
+        <div class="combat-state-controls">
+          <label>Combat States:</label>
+          <div class="combat-state-checkboxes">
+            <label class="state-toggle">
+              <input type="checkbox" name="system.combatStates.raging" {{checked system.combatStates.raging}} /> Raging
+            </label>
+            <label class="state-toggle">
+              <input type="checkbox" name="system.combatStates.surging" {{checked system.combatStates.surging}} />
+              Surging
+            </label>
+            <label class="state-toggle">
+              <input type="checkbox" name="system.combatStates.mindful" {{checked system.combatStates.mindful}} />
+              Mindful
+            </label>
+            <label class="state-toggle">
+              <input type="checkbox" name="system.combatStates.superior" {{checked system.combatStates.superior}} />
+              Superior
+            </label>
+            <label class="state-toggle">
+              <input type="checkbox" name="system.combatStates.undying" {{checked system.combatStates.undying}} />
+              Undying
+            </label>
+          </div>
+        </div>
+      </div>
+      {{#if hasCombatStateEffects}}
+      <div class="combat-state-summary">
+        {{#each combatStateSummary}}
+        <div class="state-effect-line">
+          <span class="state-name">{{state}}:</span> {{effect}}
+        </div>
+        {{/each}}
+      </div>
+      {{/if}}
+      <div class="effect-panel-body">
+        {{#if hasActiveEffects}}
+          {{#each effectGroups}}
+          <div class="effect-group" data-source="{{key}}">
+            <div class="effect-group-header" data-action="toggle-effect-group">
+              <i class="fas fa-chevron-down group-toggle"></i>
+              <span class="group-label">{{label}}</span>
+              <span class="effect-count">({{count}})</span>
+            </div>
+            <div class="effect-group-content">
+              {{#each effects}}
+              <div class="effect-item type-{{type}}" data-effect-id="{{id}}">
+                <div class="effect-controls">
+                  {{#if (eq type "automatic")}}
+                    <span class="effect-badge auto" title="Always Active">AUTO</span>
+                  {{else if (eq type "passive")}}
+                    <label class="effect-toggle" title="Toggle Passive Effect">
+                      <input type="checkbox" class="passive-toggle" data-effect-id="{{id}}" {{#if isEnabled}}checked{{/if}} />
+                      <span class="toggle-slider"></span>
+                    </label>
+                  {{else if (eq type "limited")}}
+                    <div class="usage-tracker" data-effect-id="{{id}}" data-limit="{{usageLimit}}" data-max="{{maxUses}}">
+                      {{#each pips}}
+                      <span class="usage-pip {{#if available}}available{{/if}}" data-index="{{index}}"></span>
+                      {{/each}}
+                    </div>
+                  {{else if (eq type "triggered")}}
+                    <span class="effect-badge triggered {{#if isTriggered}}active{{/if}}" title="{{keyword}}">
+                      {{truncatedKeyword}}
+                    </span>
+                  {{/if}}
+                </div>
+                <div class="effect-info">
+                  <span class="effect-name">{{name}} (L{{level}})</span>
+                  <span class="effect-text" title="{{text}}">{{text}}</span>
+                </div>
+              </div>
+              {{/each}}
+            </div>
+          </div>
+          {{/each}}
+        {{else}}
+          <div class="no-effects"><p>No active effects. Add racial traits or talents to see effects here.</p></div>
+        {{/if}}
+      </div>
+      {{!-- New Round / New Encounter buttons are in the Combat tab only --}}
+    </div>
+
+    {{!-- CONDITIONS --}}
+    <div class="section conditions-section">
+      <div class="section-header">Combat Conditions <span class="conditions-tab-hint">(manage in Combat tab)</span>
+      </div>
+      <div class="conditions-summary">
+        {{#each activeConditions}}
+        <span class="condition-badge {{severity}}">{{name}}</span>
+        {{else}}
+        <span class="no-conditions">No active conditions</span>
+        {{/each}}
+      </div>
+    </div>
+
+  </div>
+</div>

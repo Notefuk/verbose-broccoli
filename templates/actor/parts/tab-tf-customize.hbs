@@ -1,0 +1,268 @@
+{{!-- Transformation Customization Tab - "Control Tower" for transformation rules --}}
+<div class="tfc-container">
+
+  {{!-- ===== SECTION 1: Aspect Customization ===== --}}
+  <div class="tfc-section" data-section="aspects">
+    <div class="tfc-section-header" data-action="tfc-toggle-section">
+      <i class="fas fa-layer-group"></i> Aspect Customization
+      <i class="fas fa-chevron-down tfc-chevron"></i>
+    </div>
+    <div class="tfc-section-body">
+      {{#if tfcTransformations.length}}
+      <div class="tfc-aspect-list">
+        {{#each tfcTransformations}}
+        <div class="tfc-aspect-row" data-trans-index="{{transIndex}}">
+          <div class="tfc-aspect-name">{{name}}</div>
+          <div class="tfc-aspect-tags">
+            {{#each aspects}}
+            <span class="tfc-aspect-tag">
+              {{this}}
+              <button type="button" class="tfc-aspect-remove" data-action="tfc-remove-aspect" data-trans-index="{{../transIndex}}" data-aspect="{{this}}"><i class="fas fa-times"></i></button>
+            </span>
+            {{/each}}
+            <div class="tfc-aspect-add">
+              <input type="text" class="tfc-aspect-input" data-trans-index="{{transIndex}}" placeholder="Add aspect..." />
+              <button type="button" class="tfc-aspect-add-btn" data-action="tfc-add-aspect" data-trans-index="{{transIndex}}"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+          {{#if hasPrelude}}
+          <div class="tfc-prelude-toggle" title="Reduce ToP Req by 1, ST Req by 5, AMB by 1(T) (min 1T). Lose last Trait + Strainless.">
+            <label>
+              <input type="checkbox" name="system.transformations.{{transIndex}}.preludeActive" {{#if preludeActive}}checked{{/if}} />
+              <span>Prelude Active</span>
+            </label>
+          </div>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <div class="tfc-empty">No transformations on this character.</div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ===== SECTION 2: AMB and Stress Customization ===== --}}
+  <div class="tfc-section" data-section="amb">
+    <div class="tfc-section-header" data-action="tfc-toggle-section">
+      <i class="fas fa-chart-bar"></i> AMB and Stress Customization
+      <i class="fas fa-chevron-down tfc-chevron"></i>
+    </div>
+    <div class="tfc-section-body">
+      {{#if tfcTransformations.length}}
+      <div class="tfc-amb-table-wrap">
+        <table class="tfc-amb-table">
+          <thead>
+            <tr>
+              <th class="col-name">Transformation</th>
+              <th class="col-num">ST Req.</th>
+              <th class="col-num">ToP Req.</th>
+              <th class="col-check">Match FO/MA</th>
+              <th class="col-check">Scale AMB</th>
+              <th class="col-attr">AG</th>
+              <th class="col-attr">FO</th>
+              <th class="col-attr">TE</th>
+              <th class="col-attr">SC</th>
+              <th class="col-attr">IN</th>
+              <th class="col-attr">MA</th>
+              <th class="col-attr">PE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each tfcTransformations}}
+            <tr data-trans-index="{{transIndex}}" {{#if preludeReducingThis}}class="prelude-active"{{/if}}>
+              <td class="col-name">{{name}}{{#if preludeReducingThis}} <span class="prelude-tag" title="Prelude: ST -5, ToP -1">⤷ Prelude</span>{{/if}}</td>
+              <td class="col-num">
+                <input type="number" class="tfc-input" name="system.transformations.{{transIndex}}.stressTest" value="{{stressTest}}" />
+                {{#if preludeReducingThis}}<div class="prelude-effective" title="Effective with Prelude">eff: {{effectiveStressTest}}</div>{{/if}}
+              </td>
+              <td class="col-num">
+                <input type="text" class="tfc-input" name="system.transformations.{{transIndex}}.tierRequirement" value="{{tierRequirement}}" />
+                {{#if preludeReducingThis}}<div class="prelude-effective" title="Effective with Prelude">eff: {{effectiveTierRequirement}}</div>{{/if}}
+              </td>
+              <td class="col-check">
+                <input type="checkbox" name="system.transformations.{{transIndex}}.matchFoMa" {{#if matchFoMa}}checked{{/if}} />
+              </td>
+              <td class="col-check">
+                <input type="checkbox" name="system.transformations.{{transIndex}}.scaleAmb" {{#if scaleAmb}}checked{{/if}} />
+              </td>
+              <td class="col-attr"><input type="text" class="tfc-input tfc-attr-input" data-action="tfc-edit-amb" data-trans-index="{{transIndex}}" data-attr="ag" value="{{ambAg}}" /></td>
+              <td class="col-attr"><input type="text" class="tfc-input tfc-attr-input" data-action="tfc-edit-amb" data-trans-index="{{transIndex}}" data-attr="fo" value="{{ambFo}}" /></td>
+              <td class="col-attr"><input type="text" class="tfc-input tfc-attr-input" data-action="tfc-edit-amb" data-trans-index="{{transIndex}}" data-attr="te" value="{{ambTe}}" /></td>
+              <td class="col-attr"><input type="text" class="tfc-input tfc-attr-input" data-action="tfc-edit-amb" data-trans-index="{{transIndex}}" data-attr="sc" value="{{ambSc}}" /></td>
+              <td class="col-attr"><input type="text" class="tfc-input tfc-attr-input" data-action="tfc-edit-amb" data-trans-index="{{transIndex}}" data-attr="in" value="{{ambIn}}" /></td>
+              <td class="col-attr"><input type="text" class="tfc-input tfc-attr-input" data-action="tfc-edit-amb" data-trans-index="{{transIndex}}" data-attr="ma" value="{{ambMa}}" /></td>
+              <td class="col-attr"><input type="text" class="tfc-input tfc-attr-input" data-action="tfc-edit-amb" data-trans-index="{{transIndex}}" data-attr="pe" value="{{ambPe}}" /></td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </div>
+      {{else}}
+      <div class="tfc-empty">No transformations on this character.</div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ===== SECTION 3: Power Improvement ===== --}}
+  <div class="tfc-section" data-section="powerImprovement">
+    <div class="tfc-section-header" data-action="tfc-toggle-section">
+      <i class="fas fa-arrow-up"></i> Power Improvement
+      <i class="fas fa-chevron-down tfc-chevron"></i>
+    </div>
+    <div class="tfc-section-body">
+      {{#if tfcEnhancements.length}}
+      <div class="tfc-pi-list">
+        {{#each tfcEnhancements}}
+        <div class="tfc-pi-row {{#if (eq powerImprovement 'control')}}pi-control{{/if}} {{#if (eq powerImprovement 'surpass')}}pi-surpass{{/if}}" data-trans-index="{{transIndex}}">
+          <div class="tfc-pi-name">
+            <span>{{name}}</span>
+            {{#if isTranscendent}}<span class="tfc-pi-badge transcendent">Transcendent</span>{{/if}}
+          </div>
+          <div class="tfc-pi-tier">ToP Req: {{tierRequirement}}</div>
+          <div class="tfc-pi-select">
+            <select class="tfc-input" data-action="tfc-set-power-improvement" data-trans-index="{{transIndex}}">
+              <option value="none" {{#if (eq powerImprovement 'none')}}selected{{/if}}>None</option>
+              <option value="control" {{#if (eq powerImprovement 'control')}}selected{{/if}}>Control</option>
+              <option value="surpass" {{#if (eq powerImprovement 'surpass')}}selected{{/if}}>Surpass</option>
+            </select>
+          </div>
+          {{#if (eq powerImprovement 'control')}}
+          <div class="tfc-pi-effects">
+            <span class="tfc-pi-effect add"><i class="fas fa-plus"></i> Strainless</span>
+            <span class="tfc-pi-effect remove"><i class="fas fa-minus"></i> Stress -2</span>
+            <span class="tfc-pi-effect info">Can remove: Exhausting, Draining, Weakening</span>
+          </div>
+          {{/if}}
+          {{#if (eq powerImprovement 'surpass')}}
+          <div class="tfc-pi-effects">
+            <span class="tfc-pi-effect surpass"><i class="fas fa-crown"></i> Mastered</span>
+            <span class="tfc-pi-effect surpass"><i class="fas fa-infinity"></i> Unlimited State Access</span>
+          </div>
+          {{/if}}
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
+      <div class="tfc-empty">No Enhancement Powers on this character.</div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ===== SECTION 4: Limit Shattering / Unlimited Transformation ===== --}}
+  <div class="tfc-section" data-section="limitShattering">
+    <div class="tfc-section-header" data-action="tfc-toggle-section">
+      <i class="fas fa-bolt"></i> Limit Shattering / Unlimited Transformation
+      <i class="fas fa-chevron-down tfc-chevron"></i>
+    </div>
+    <div class="tfc-section-body">
+      <div class="tfc-ls-grid">
+        {{!-- Legendary Form Selection --}}
+        <div class="tfc-ls-field">
+          <label>Legendary Form</label>
+          <select class="tfc-input" data-action="tfc-set-ls-form">
+            <option value="-1">-- None --</option>
+            {{#each tfcLegendaryOptions}}
+            <option value="{{transIndex}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        {{!-- Exceed Trait Selection --}}
+        <div class="tfc-ls-field">
+          <label>Exceed Trait</label>
+          <select class="tfc-input" data-action="tfc-set-ls-exceed" {{#unless tfcLsHasForm}}disabled{{/unless}}>
+            <option value="">-- Select Trait --</option>
+            {{#each tfcExceedTraits}}
+            <option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>
+            {{/each}}
+          </select>
+        </div>
+
+        {{!-- Exceed State Toggle --}}
+        <div class="tfc-ls-field">
+          <label>Exceed State</label>
+          <label class="tfc-toggle-label">
+            <input type="checkbox" data-action="tfc-toggle-exceed" {{#if tfcLsExceedActive}}checked{{/if}} {{#unless tfcLsHasForm}}disabled{{/unless}} />
+            <span>Active</span>
+          </label>
+        </div>
+      </div>
+
+      {{!-- Exceed Effects Summary --}}
+      {{#if tfcLsHasForm}}
+      <div class="tfc-ls-effects">
+        <div class="tfc-ls-effect"><i class="fas fa-arrow-up"></i> AMB: +1(T) AG/TE/FO/MA</div>
+        <div class="tfc-ls-effect"><i class="fas fa-plus"></i> +1 LV Draining, lose Strainless/Natural</div>
+        <div class="tfc-ls-effect"><i class="fas fa-exclamation-triangle"></i> Stress Test Req. +4</div>
+        {{#if tfcLsExceedTrait}}
+        <div class="tfc-ls-effect trait"><i class="fas fa-star"></i> {{tfcLsExceedTrait}}</div>
+        {{/if}}
+      </div>
+      {{/if}}
+    </div>
+  </div>
+
+  {{!-- ===== SECTION 5: Unique Paths ===== --}}
+  <div class="tfc-section" data-section="uniquePaths">
+    <div class="tfc-section-header" data-action="tfc-toggle-section">
+      <i class="fas fa-route"></i> Unique Paths
+      <i class="fas fa-chevron-down tfc-chevron"></i>
+    </div>
+    <div class="tfc-section-body">
+      <table class="tfc-up-table">
+        <thead>
+          <tr>
+            <th class="col-trans">Transformation</th>
+            <th class="col-path">Unique Path</th>
+            <th class="col-amb">AMB</th>
+            <th class="col-desc">Unique Path Description</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each tfcUniquePaths}}
+          <tr data-up-index="{{@index}}">
+            <td class="col-trans">
+              <select class="tfc-input" data-action="tfc-set-up-form" data-up-index="{{@index}}">
+                <option value="-1">-- Select --</option>
+                {{#each ../tfcLegendaryForUpDropdown}}
+                <option value="{{transIndex}}" {{#if (eq transIndex ../transformationId)}}selected{{/if}}>{{name}}</option>
+                {{/each}}
+              </select>
+            </td>
+            <td class="col-path">
+              <select class="tfc-input" data-action="tfc-set-up-path" data-up-index="{{@index}}">
+                <option value="">-- Select --</option>
+                {{#each ../tfcUniquePathOptions}}
+                <option value="{{id}}" {{#if (eq id ../pathType)}}selected{{/if}}>{{name}}</option>
+                {{/each}}
+              </select>
+            </td>
+            <td class="col-amb">
+              <select class="tfc-input" data-action="tfc-set-up-amb" data-up-index="{{@index}}">
+                <option value="">--</option>
+                <option value="ag" {{#if (eq ambAttribute 'ag')}}selected{{/if}}>AG</option>
+                <option value="fo" {{#if (eq ambAttribute 'fo')}}selected{{/if}}>FO</option>
+                <option value="te" {{#if (eq ambAttribute 'te')}}selected{{/if}}>TE</option>
+                <option value="sc" {{#if (eq ambAttribute 'sc')}}selected{{/if}}>SC</option>
+                <option value="in" {{#if (eq ambAttribute 'in')}}selected{{/if}}>IN</option>
+                <option value="ma" {{#if (eq ambAttribute 'ma')}}selected{{/if}}>MA</option>
+                <option value="pe" {{#if (eq ambAttribute 'pe')}}selected{{/if}}>PE</option>
+              </select>
+            </td>
+            <td class="col-desc">
+              <span class="tfc-up-desc">{{pathDescription}}</span>
+            </td>
+            <td class="col-actions">
+              <button type="button" class="tfc-row-delete" data-action="tfc-delete-up" data-up-index="{{@index}}"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <button type="button" class="tfc-add-row-btn" data-action="tfc-add-up"><i class="fas fa-plus"></i> Add Unique Path</button>
+    </div>
+  </div>
+
+</div>

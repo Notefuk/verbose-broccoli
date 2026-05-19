@@ -1,0 +1,61 @@
+<div class="bio-container">
+  <div class="bio-grid">
+
+    {{!-- Z-SOUL --}}
+    <div class="bio-section zsoul">
+      <div class="section-header">Z-Soul</div>
+      <div class="zsoul-grid">
+        <div class="zsoul-item">
+          <label>Alignment</label>
+          <select name="system.zsoul.alignment">
+            {{selectOptions alignmentOptions selected=system.zsoul.alignment}}
+          </select>
+        </div>
+        <div class="zsoul-item">
+          <label>Karma</label>
+          <input type="number" name="system.zsoul.karma" value="{{system.zsoul.karma}}" />
+        </div>
+      </div>
+      <div class="zsoul-quote">
+        <label>Quote</label>
+        <textarea name="system.zsoul.quote" rows="2" placeholder="Character's signature quote...">{{system.zsoul.quote}}</textarea>
+      </div>
+    </div>
+
+    {{!-- DETAILS --}}
+    <div class="bio-section details">
+      <div class="section-header">Details</div>
+      <div class="details-grid">
+        <div class="detail-item">
+          <label>Race</label>
+          <span class="detail-display">{{raceLabel}}</span>
+        </div>
+        <div class="detail-item">
+          <label>Height</label>
+          <span class="detail-display">{{system.details.height}}</span>
+        </div>
+        <div class="detail-item">
+          <label>Weight</label>
+          <span class="detail-display">{{system.details.weight}}</span>
+        </div>
+        <div class="detail-item">
+          <label>Age</label>
+          <span class="detail-display">{{system.details.age}}</span>
+        </div>
+      </div>
+    </div>
+
+    {{!-- BIOGRAPHY --}}
+    <div class="bio-section biography">
+      <div class="section-header">Biography</div>
+      <textarea name="system.biography" rows="10" placeholder="Character background and history...">{{system.biography}}</textarea>
+    </div>
+
+    {{!-- NOTES --}}
+    <div class="bio-section notes">
+      <div class="section-header">Notes</div>
+      <textarea name="system.notes" rows="6" placeholder="Session notes, reminders...">{{system.notes}}</textarea>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<form class="{{cssClass}} flexcol" autocomplete="off">
+  <header class="sheet-header flexrow">
+    <img class="item-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <div class="header-details">
+      <h1 class="item-name">
+        <input name="name" type="text" value="{{item.name}}" placeholder="Item Name" />
+      </h1>
+      <div class="item-type">{{item.type}}</div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description"><i class="fas fa-align-left"></i> Description</a>
+    <a class="item" data-tab="details"><i class="fas fa-cog"></i> Details</a>
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab" data-group="primary" data-tab="description">
+      <div class="editor-container">
+        {{editor enrichedDescription target="system.description" button=true editable=editable}}
+      </div>
+    </div>
+    <div class="tab" data-group="primary" data-tab="details">
+      <div class="item-details">
+        <p>Item details will be implemented in a future update.</p>
+      </div>
+    </div>
+  </section>
+</form>
