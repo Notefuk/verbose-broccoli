@@ -62,8 +62,9 @@
     "distance": 1,
     "units": "sq"
   },
-  "url": "https://github.com/Notefuk/verbose-broccoli",
-  "manifest": "https://raw.githubusercontent.com/Notefuk/verbose-broccoli/main/system.json",
+"url": "https://github.com/Notefuk/verbose-broccoli",
+ "manifest": "https://raw.githubusercontent.com/Notefuk/verbose-broccoli/main/system.json",
+  "download": "https://github.com/Notefuk/verbose-broccoli/archive/refs/heads/main.zip",
   "readme": "https://github.com/Notefuk/verbose-broccoli/blob/main/README.md",
   "changelog": "https://github.com/Notefuk/verbose-broccoli/blob/main/CHANGELOG.md",
   "bugs": "https://github.com/Notefuk/verbose-broccoli/issues",
