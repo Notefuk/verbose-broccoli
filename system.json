@@ -61,13 +61,13 @@
   "grid": {
     "distance": 1,
     "units": "sq"
-  },
-"url": "https://github.com/Notefuk/verbose-broccoli",
- "manifest": "https://raw.githubusercontent.com/Notefuk/verbose-broccoli/main/system.json",
-  "download": "https://github.com/Notefuk/verbose-broccoli/archive/refs/heads/main.zip",
-  "readme": "https://github.com/Notefuk/verbose-broccoli/blob/main/README.md",
-  "changelog": "https://github.com/Notefuk/verbose-broccoli/blob/main/CHANGELOG.md",
-  "bugs": "https://github.com/Notefuk/verbose-broccoli/issues",
+},
+ "url": "https://github.com/Notefuk/verbose-broccoli",
+"manifest": "https://raw.githubusercontent.com/Notefuk/verbose-broccoli/main/system.json",
+"download": "https://github.com/Notefuk/verbose-broccoli/releases/latest/download/system.zip",
+  "readme": "https://github.com/ArdillaTactica/dbu-mrr-old/blob/main/README.md",
+  "changelog": "https://github.com/ArdillaTactica/dbu-mrr-old/blob/main/CHANGELOG.md",
+  "bugs": "https://github.com/ArdillaTactica/dbu-mrr-old/issues",
   "license": "MIT",
   "media": []
 }
