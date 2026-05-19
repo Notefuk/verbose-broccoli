@@ -1,6 +1,6 @@
 {
-  "id": "DBU-MRR-OLD",
-  "title": "Dragon Universe RPG - Old System",
+  "id": "dbu-mrr-old-v14",
+  "title": "Dragon Universe RPG - Old System (v14)",
   "description": "Automatización para Foundry VTT del juego de rol Dragon Universe (versión antigua), creado por el equipo de https://dbu-rpg.com/. Implementación con permiso de los autores; mecánicas d10, Tiers of Power, Ki y transformaciones. Proyecto sin ánimo de lucro, gratuito, hecho por fans para fans.",
   "version": "1.0.2",
   "compatibility": {
@@ -62,12 +62,12 @@
     "distance": 1,
     "units": "sq"
   },
- "url": "https://github.com/Notefuk/verbose-broccoli",
-"manifest": "https://raw.githubusercontent.com/Notefuk/verbose-broccoli/main/system.json",
-"download": "https://github.com/Notefuk/verbose-broccoli/releases/latest/download/system.zip",
-  "readme": "https://github.com/ArdillaTactica/dbu-mrr-old/blob/main/README.md",
-  "changelog": "https://github.com/ArdillaTactica/dbu-mrr-old/blob/main/CHANGELOG.md",
-  "bugs": "https://github.com/ArdillaTactica/dbu-mrr-old/issues",
+  "url": "https://github.com/Notefuk/verbose-broccoli",
+  "manifest": "https://raw.githubusercontent.com/Notefuk/verbose-broccoli/main/system.json",
+  "download": "https://github.com/Notefuk/verbose-broccoli/releases/latest/download/system.zip",
+  "readme": "https://github.com/Notefuk/verbose-broccoli/blob/main/README.md",
+  "changelog": "https://github.com/Notefuk/verbose-broccoli/blob/main/CHANGELOG.md",
+  "bugs": "https://github.com/Notefuk/verbose-broccoli/issues",
   "license": "MIT",
   "media": []
 }
